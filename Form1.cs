@@ -61,6 +61,10 @@ namespace ledescreator
                 {
                     c.Text = String.Empty;
                 }
+                this.LineFE.SelectedIndex = -1;
+                this.LineExCode.SelectedIndex = -1;
+                this.LineActCode.SelectedIndex = -1;
+                this.LineActCode.SelectedIndex = -1;
             }
         }
 
@@ -132,6 +136,7 @@ namespace ledescreator
                 l.INVOICE_DESCRIPTION = this.InvoiceDesc.Text;
                 i.INVOICE_TOTAL = calcTotal();
             }
+            this.txt_Inv_Total.Text = "Total: $" + toDollars(calcTotal());
         }
 
         private void btn_Load_Click(object sender, EventArgs e)
@@ -177,7 +182,8 @@ namespace ledescreator
             }
             else
             {
-                this.lLines.Items.Remove(this.lLines.SelectedIndex);
+                this.lLines.Items.Remove(this.lLines.SelectedItem);
+                this.txt_Inv_Total.Text = "Total: $" + toDollars(calcTotal());
             }
         }
 
@@ -259,6 +265,10 @@ namespace ledescreator
                     c.Text = String.Empty;
                 }
             }
+            this.LineFE.SelectedIndex = -1;
+            this.LineExCode.SelectedIndex = -1;
+            this.LineActCode.SelectedIndex = -1;
+            this.LineActCode.SelectedIndex = -1;
             this.lLines.Items.Clear();
         }
 

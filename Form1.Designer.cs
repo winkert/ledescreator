@@ -33,9 +33,13 @@
             this.LineDate = new System.Windows.Forms.DateTimePicker();
             this.spacer2 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
+            this.LineFE = new System.Windows.Forms.ComboBox();
             this.label15 = new System.Windows.Forms.Label();
+            this.LineTaskCode = new System.Windows.Forms.ComboBox();
             this.label16 = new System.Windows.Forms.Label();
+            this.LineExCode = new System.Windows.Forms.ComboBox();
             this.label17 = new System.Windows.Forms.Label();
+            this.LineActCode = new System.Windows.Forms.ComboBox();
             this.label8 = new System.Windows.Forms.Label();
             this.label21 = new System.Windows.Forms.Label();
             this.LineDesc = new System.Windows.Forms.TextBox();
@@ -76,10 +80,7 @@
             this.InvoiceClientID = new System.Windows.Forms.TextBox();
             this.btn_NewInvoice = new System.Windows.Forms.Button();
             this.btn_Quit = new System.Windows.Forms.Button();
-            this.LineFE = new System.Windows.Forms.ComboBox();
-            this.LineTaskCode = new System.Windows.Forms.ComboBox();
-            this.LineExCode = new System.Windows.Forms.ComboBox();
-            this.LineActCode = new System.Windows.Forms.ComboBox();
+            this.txt_Inv_Total = new System.Windows.Forms.TextBox();
             this.flowLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel2.SuspendLayout();
             this.SuspendLayout();
@@ -153,6 +154,19 @@
             this.label11.TabIndex = 10;
             this.label11.Text = "Fee/Expense";
             // 
+            // LineFE
+            // 
+            this.LineFE.FormattingEnabled = true;
+            this.LineFE.Items.AddRange(new object[] {
+            "",
+            "F",
+            "E"});
+            this.LineFE.Location = new System.Drawing.Point(363, 3);
+            this.LineFE.Name = "LineFE";
+            this.LineFE.Size = new System.Drawing.Size(39, 21);
+            this.LineFE.TabIndex = 10;
+            this.LineFE.SelectedIndexChanged += new System.EventHandler(this.LineFE_SelectedIndexChanged);
+            // 
             // label15
             // 
             this.label15.AutoSize = true;
@@ -161,6 +175,44 @@
             this.label15.Size = new System.Drawing.Size(59, 13);
             this.label15.TabIndex = 14;
             this.label15.Text = "Task Code";
+            // 
+            // LineTaskCode
+            // 
+            this.LineTaskCode.FormattingEnabled = true;
+            this.LineTaskCode.Items.AddRange(new object[] {
+            "L110",
+            "L120",
+            "L130",
+            "L140",
+            "L150",
+            "L160",
+            "L190",
+            "L210",
+            "L220",
+            "L230",
+            "L240",
+            "L250",
+            "L260",
+            "L310",
+            "L320",
+            "L330",
+            "L340",
+            "L350",
+            "L390",
+            "L410",
+            "L420",
+            "L430",
+            "L440",
+            "L450",
+            "L460",
+            "L470",
+            "L510",
+            "L520",
+            "L530"});
+            this.LineTaskCode.Location = new System.Drawing.Point(68, 30);
+            this.LineTaskCode.Name = "LineTaskCode";
+            this.LineTaskCode.Size = new System.Drawing.Size(42, 21);
+            this.LineTaskCode.TabIndex = 11;
             // 
             // label16
             // 
@@ -171,6 +223,39 @@
             this.label16.TabIndex = 15;
             this.label16.Text = "Expense Code";
             // 
+            // LineExCode
+            // 
+            this.LineExCode.FormattingEnabled = true;
+            this.LineExCode.Items.AddRange(new object[] {
+            "E101 ",
+            "E102 ",
+            "E103 ",
+            "E104 ",
+            "E105 ",
+            "E106 ",
+            "E107 ",
+            "E108 ",
+            "E109 ",
+            "E110 ",
+            "E111 ",
+            "E112 ",
+            "E113 ",
+            "E114 ",
+            "E115 ",
+            "E116 ",
+            "E117 ",
+            "E118 ",
+            "E119 ",
+            "E120 ",
+            "E121 ",
+            "E122 ",
+            "E123 ",
+            "E124 "});
+            this.LineExCode.Location = new System.Drawing.Point(198, 30);
+            this.LineExCode.Name = "LineExCode";
+            this.LineExCode.Size = new System.Drawing.Size(42, 21);
+            this.LineExCode.TabIndex = 12;
+            // 
             // label17
             // 
             this.label17.AutoSize = true;
@@ -179,6 +264,26 @@
             this.label17.Size = new System.Drawing.Size(69, 13);
             this.label17.TabIndex = 16;
             this.label17.Text = "Activity Code";
+            // 
+            // LineActCode
+            // 
+            this.LineActCode.FormattingEnabled = true;
+            this.LineActCode.Items.AddRange(new object[] {
+            "A101 ",
+            "A102 ",
+            "A103 ",
+            "A104 ",
+            "A105 ",
+            "A106 ",
+            "A107 ",
+            "A108 ",
+            "A109 ",
+            "A110 ",
+            "A111 "});
+            this.LineActCode.Location = new System.Drawing.Point(321, 30);
+            this.LineActCode.Name = "LineActCode";
+            this.LineActCode.Size = new System.Drawing.Size(42, 21);
+            this.LineActCode.TabIndex = 13;
             // 
             // label8
             // 
@@ -312,7 +417,7 @@
             // lLines
             // 
             this.lLines.FormattingEnabled = true;
-            this.lLines.Location = new System.Drawing.Point(455, 75);
+            this.lLines.Location = new System.Drawing.Point(455, 41);
             this.lLines.Name = "lLines";
             this.lLines.Size = new System.Drawing.Size(193, 277);
             this.lLines.TabIndex = 23;
@@ -339,7 +444,7 @@
             // 
             // btn_Load
             // 
-            this.btn_Load.Location = new System.Drawing.Point(492, 41);
+            this.btn_Load.Location = new System.Drawing.Point(492, 12);
             this.btn_Load.Name = "btn_Load";
             this.btn_Load.Size = new System.Drawing.Size(75, 23);
             this.btn_Load.TabIndex = 24;
@@ -349,7 +454,7 @@
             // 
             // btn_Del
             // 
-            this.btn_Del.Location = new System.Drawing.Point(573, 41);
+            this.btn_Del.Location = new System.Drawing.Point(573, 12);
             this.btn_Del.Name = "btn_Del";
             this.btn_Del.Size = new System.Drawing.Size(75, 23);
             this.btn_Del.TabIndex = 25;
@@ -546,115 +651,22 @@
             this.btn_Quit.UseVisualStyleBackColor = true;
             this.btn_Quit.Click += new System.EventHandler(this.btn_Quit_Click);
             // 
-            // LineFE
+            // txt_Inv_Total
             // 
-            this.LineFE.FormattingEnabled = true;
-            this.LineFE.Items.AddRange(new object[] {
-            "",
-            "F",
-            "E"});
-            this.LineFE.Location = new System.Drawing.Point(363, 3);
-            this.LineFE.Name = "LineFE";
-            this.LineFE.Size = new System.Drawing.Size(39, 21);
-            this.LineFE.TabIndex = 10;
-            this.LineFE.SelectedIndexChanged += new System.EventHandler(this.LineFE_SelectedIndexChanged);
-            // 
-            // LineTaskCode
-            // 
-            this.LineTaskCode.FormattingEnabled = true;
-            this.LineTaskCode.Items.AddRange(new object[] {
-            "L110",
-            "L120",
-            "L130",
-            "L140",
-            "L150",
-            "L160",
-            "L190",
-            "L210",
-            "L220",
-            "L230",
-            "L240",
-            "L250",
-            "L260",
-            "L310",
-            "L320",
-            "L330",
-            "L340",
-            "L350",
-            "L390",
-            "L410",
-            "L420",
-            "L430",
-            "L440",
-            "L450",
-            "L460",
-            "L470",
-            "L510",
-            "L520",
-            "L530"});
-            this.LineTaskCode.Location = new System.Drawing.Point(68, 30);
-            this.LineTaskCode.Name = "LineTaskCode";
-            this.LineTaskCode.Size = new System.Drawing.Size(42, 21);
-            this.LineTaskCode.TabIndex = 11;
-            // 
-            // LineExCode
-            // 
-            this.LineExCode.FormattingEnabled = true;
-            this.LineExCode.Items.AddRange(new object[] {
-            "E101 ",
-            "E102 ",
-            "E103 ",
-            "E104 ",
-            "E105 ",
-            "E106 ",
-            "E107 ",
-            "E108 ",
-            "E109 ",
-            "E110 ",
-            "E111 ",
-            "E112 ",
-            "E113 ",
-            "E114 ",
-            "E115 ",
-            "E116 ",
-            "E117 ",
-            "E118 ",
-            "E119 ",
-            "E120 ",
-            "E121 ",
-            "E122 ",
-            "E123 ",
-            "E124 "});
-            this.LineExCode.Location = new System.Drawing.Point(198, 30);
-            this.LineExCode.Name = "LineExCode";
-            this.LineExCode.Size = new System.Drawing.Size(42, 21);
-            this.LineExCode.TabIndex = 12;
-            // 
-            // LineActCode
-            // 
-            this.LineActCode.FormattingEnabled = true;
-            this.LineActCode.Items.AddRange(new object[] {
-            "A101 ",
-            "A102 ",
-            "A103 ",
-            "A104 ",
-            "A105 ",
-            "A106 ",
-            "A107 ",
-            "A108 ",
-            "A109 ",
-            "A110 ",
-            "A111 "});
-            this.LineActCode.Location = new System.Drawing.Point(321, 30);
-            this.LineActCode.Name = "LineActCode";
-            this.LineActCode.Size = new System.Drawing.Size(42, 21);
-            this.LineActCode.TabIndex = 13;
+            this.txt_Inv_Total.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txt_Inv_Total.Cursor = System.Windows.Forms.Cursors.Default;
+            this.txt_Inv_Total.Location = new System.Drawing.Point(455, 324);
+            this.txt_Inv_Total.Name = "txt_Inv_Total";
+            this.txt_Inv_Total.ReadOnly = true;
+            this.txt_Inv_Total.Size = new System.Drawing.Size(193, 13);
+            this.txt_Inv_Total.TabIndex = 28;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(660, 361);
+            this.Controls.Add(this.txt_Inv_Total);
             this.Controls.Add(this.btn_Quit);
             this.Controls.Add(this.btn_NewInvoice);
             this.Controls.Add(this.flowLayoutPanel2);
@@ -672,6 +684,7 @@
             this.flowLayoutPanel2.ResumeLayout(false);
             this.flowLayoutPanel2.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -729,6 +742,7 @@
         private System.Windows.Forms.ComboBox LineTaskCode;
         private System.Windows.Forms.ComboBox LineExCode;
         private System.Windows.Forms.ComboBox LineActCode;
+        private System.Windows.Forms.TextBox txt_Inv_Total;
     }
 }
 
