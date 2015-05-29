@@ -125,15 +125,15 @@ namespace ledescreator
             //correct the totals for all items
             foreach (ledes i in this.lLines.Items)
             {
-                l.INVOICE_DATE = this.InvoiceDate.Value;
-                l.INVOICE_NUMBER = this.InvoiceNum.Text;
-                l.CLIENT_ID = this.InvoiceClientID.Text;
-                l.LAW_FIRM_MATTER_ID = this.InvoiceMatterID.Text;
-                l.CLIENT_MATTER_ID = this.InvoiceMatterID.Text;
-                l.LAW_FIRM_ID = this.InvoiceTIN.Text;
-                l.BILLING_START_DATE = this.BillStart.Value;
-                l.BILLING_END_DATE = this.BillEnd.Value;
-                l.INVOICE_DESCRIPTION = this.InvoiceDesc.Text;
+                i.INVOICE_DATE = this.InvoiceDate.Value;
+                i.INVOICE_NUMBER = this.InvoiceNum.Text;
+                i.CLIENT_ID = this.InvoiceClientID.Text;
+                i.LAW_FIRM_MATTER_ID = this.InvoiceMatterID.Text;
+                i.CLIENT_MATTER_ID = this.InvoiceMatterID.Text;
+                i.LAW_FIRM_ID = this.InvoiceTIN.Text;
+                i.BILLING_START_DATE = this.BillStart.Value;
+                i.BILLING_END_DATE = this.BillEnd.Value;
+                i.INVOICE_DESCRIPTION = this.InvoiceDesc.Text;
                 i.INVOICE_TOTAL = calcTotal();
             }
             this.txt_Inv_Total.Text = "Total: $" + toDollars(calcTotal());
