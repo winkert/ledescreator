@@ -46,6 +46,24 @@ namespace ledescreator
             String dollar = c.ToString("#######0.00");
             return dollar;
         }
+        public void updateTotals()
+        {
+            //correct the totals for all items
+            foreach (ledes i in this.lLines.Items)
+            {
+                i.INVOICE_DATE = this.InvoiceDate.Value;
+                i.INVOICE_NUMBER = this.InvoiceNum.Text;
+                i.CLIENT_ID = this.InvoiceClientID.Text;
+                i.LAW_FIRM_MATTER_ID = this.InvoiceMatterID.Text;
+                i.CLIENT_MATTER_ID = this.InvoiceMatterID.Text;
+                i.LAW_FIRM_ID = this.InvoiceTIN.Text;
+                i.BILLING_START_DATE = this.BillStart.Value;
+                i.BILLING_END_DATE = this.BillEnd.Value;
+                i.INVOICE_DESCRIPTION = this.InvoiceDesc.Text;
+                i.INVOICE_TOTAL = calcTotal();
+            }
+            this.txt_Inv_Total.Text = "Total: $" + toDollars(calcTotal());
+        }
         //-----------------------------------------------------------------------------//
         //Event handlers
         //-----------------------------------------------------------------------------//
@@ -123,20 +141,7 @@ namespace ledescreator
             //add the new line item
             addLine(l);
             //correct the totals for all items
-            foreach (ledes i in this.lLines.Items)
-            {
-                i.INVOICE_DATE = this.InvoiceDate.Value;
-                i.INVOICE_NUMBER = this.InvoiceNum.Text;
-                i.CLIENT_ID = this.InvoiceClientID.Text;
-                i.LAW_FIRM_MATTER_ID = this.InvoiceMatterID.Text;
-                i.CLIENT_MATTER_ID = this.InvoiceMatterID.Text;
-                i.LAW_FIRM_ID = this.InvoiceTIN.Text;
-                i.BILLING_START_DATE = this.BillStart.Value;
-                i.BILLING_END_DATE = this.BillEnd.Value;
-                i.INVOICE_DESCRIPTION = this.InvoiceDesc.Text;
-                i.INVOICE_TOTAL = calcTotal();
-            }
-            this.txt_Inv_Total.Text = "Total: $" + toDollars(calcTotal());
+            updateTotals();
         }
 
         private void btn_Load_Click(object sender, EventArgs e)
@@ -183,12 +188,13 @@ namespace ledescreator
             else
             {
                 this.lLines.Items.Remove(this.lLines.SelectedItem);
-                this.txt_Inv_Total.Text = "Total: $" + toDollars(calcTotal());
+                updateTotals();
             }
         }
 
         private void btn_Export_Click(object sender, EventArgs e)
         {
+            updateTotals();
             List<String> lines = new List<String>();
             //add header information for ledes files
             lines.Add("LEDES1998B[]");
@@ -196,6 +202,7 @@ namespace ledescreator
             //add each item as a row
             foreach (ledes l in this.lLines.Items)
             {
+
                 String newLine = "";
                 newLine += l.INVOICE_DATE.ToString(dateformat) + "|";
                 newLine += l.INVOICE_NUMBER + "|";
