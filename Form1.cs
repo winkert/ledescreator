@@ -242,7 +242,7 @@ namespace ledescreator
             {
                 foreach (String line in lines)
                 {
-                    file.WriteLine(line);
+                    file.Write(line + "\r\n"); //Changed from file.WriteLine and added \r\n
                 }
             }
             MessageBox.Show("Exported file to " + location + "\\ledes.txt");
