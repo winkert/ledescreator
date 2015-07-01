@@ -14,16 +14,13 @@ namespace ledescreator
     {
         public String location = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
         public String dateformat = "yyyyMMdd";
-        //-----------------------------------------------------------------------------//
-        //Constructor
-        //-----------------------------------------------------------------------------//
+        #region Constructor
         public Form1()
         {
             InitializeComponent();
         }
-        //-----------------------------------------------------------------------------//
-        //Public methods
-        //-----------------------------------------------------------------------------//
+        #endregion
+        #region Public Methods
         public void addLine(ledes l)
         {
             this.lLines.Items.Add(l);
@@ -64,9 +61,8 @@ namespace ledescreator
             }
             this.txt_Inv_Total.Text = "Total: $" + toDollars(calcTotal());
         }
-        //-----------------------------------------------------------------------------//
-        //Event handlers
-        //-----------------------------------------------------------------------------//
+        #endregion
+        #region Event Handlers
         private void btn_New_Click(object sender, EventArgs e)
         {
             foreach(Control c in this.flowLayoutPanel1.Controls)
@@ -311,5 +307,6 @@ namespace ledescreator
                     break;
             }
         }
+        #endregion
     }
 }

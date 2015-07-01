@@ -227,30 +227,30 @@
             // 
             this.LineExCode.FormattingEnabled = true;
             this.LineExCode.Items.AddRange(new object[] {
-            "E101 ",
-            "E102 ",
-            "E103 ",
-            "E104 ",
-            "E105 ",
-            "E106 ",
-            "E107 ",
-            "E108 ",
-            "E109 ",
-            "E110 ",
-            "E111 ",
-            "E112 ",
-            "E113 ",
-            "E114 ",
-            "E115 ",
-            "E116 ",
-            "E117 ",
-            "E118 ",
-            "E119 ",
-            "E120 ",
-            "E121 ",
-            "E122 ",
-            "E123 ",
-            "E124 "});
+            "E101",
+            "E102",
+            "E103",
+            "E104",
+            "E105",
+            "E106",
+            "E107",
+            "E108",
+            "E109",
+            "E110",
+            "E111",
+            "E112",
+            "E113",
+            "E114",
+            "E115",
+            "E116",
+            "E117",
+            "E118",
+            "E119",
+            "E120",
+            "E121",
+            "E122",
+            "E123",
+            "E124"});
             this.LineExCode.Location = new System.Drawing.Point(198, 30);
             this.LineExCode.Name = "LineExCode";
             this.LineExCode.Size = new System.Drawing.Size(42, 21);
@@ -269,17 +269,17 @@
             // 
             this.LineActCode.FormattingEnabled = true;
             this.LineActCode.Items.AddRange(new object[] {
-            "A101 ",
-            "A102 ",
-            "A103 ",
-            "A104 ",
-            "A105 ",
-            "A106 ",
-            "A107 ",
-            "A108 ",
-            "A109 ",
-            "A110 ",
-            "A111 "});
+            "A101",
+            "A102",
+            "A103",
+            "A104",
+            "A105",
+            "A106",
+            "A107",
+            "A108",
+            "A109",
+            "A110",
+            "A111"});
             this.LineActCode.Location = new System.Drawing.Point(321, 30);
             this.LineActCode.Name = "LineActCode";
             this.LineActCode.Size = new System.Drawing.Size(42, 21);
