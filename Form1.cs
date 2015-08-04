@@ -234,6 +234,9 @@ namespace ledescreator
                 lines.Add(newLine);
             }
             //save the file to the desktop
+            //Need to change the Constructor used here. Should confirm that the Encoding is correct.
+            //Default Encoding is UTF8 which seems to cause issues with the SQL procedure.
+            //Should switch to Encosing.ASCII instead as that seems to work.
             using (System.IO.StreamWriter file = new System.IO.StreamWriter(@location + "\\ledes.txt"))
             {
                 foreach (String line in lines)
