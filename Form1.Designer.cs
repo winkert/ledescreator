@@ -40,7 +40,6 @@
             this.LineExCode = new System.Windows.Forms.ComboBox();
             this.label17 = new System.Windows.Forms.Label();
             this.LineActCode = new System.Windows.Forms.ComboBox();
-            this.label8 = new System.Windows.Forms.Label();
             this.label21 = new System.Windows.Forms.Label();
             this.LineDesc = new System.Windows.Forms.TextBox();
             this.label12 = new System.Windows.Forms.Label();
@@ -60,7 +59,6 @@
             this.btn_Save = new System.Windows.Forms.Button();
             this.btn_Load = new System.Windows.Forms.Button();
             this.btn_Del = new System.Windows.Forms.Button();
-            this.btn_Export = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -78,11 +76,15 @@
             this.InvoiceTIN = new System.Windows.Forms.TextBox();
             this.InvoiceMatterID = new System.Windows.Forms.TextBox();
             this.InvoiceClientID = new System.Windows.Forms.TextBox();
-            this.btn_NewInvoice = new System.Windows.Forms.Button();
-            this.btn_Quit = new System.Windows.Forms.Button();
             this.txt_Inv_Total = new System.Windows.Forms.TextBox();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.flowLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel2.SuspendLayout();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // flowLayoutPanel1
@@ -98,7 +100,6 @@
             this.flowLayoutPanel1.Controls.Add(this.LineExCode);
             this.flowLayoutPanel1.Controls.Add(this.label17);
             this.flowLayoutPanel1.Controls.Add(this.LineActCode);
-            this.flowLayoutPanel1.Controls.Add(this.label8);
             this.flowLayoutPanel1.Controls.Add(this.label21);
             this.flowLayoutPanel1.Controls.Add(this.LineDesc);
             this.flowLayoutPanel1.Controls.Add(this.label12);
@@ -211,13 +212,13 @@
             "L530"});
             this.LineTaskCode.Location = new System.Drawing.Point(68, 30);
             this.LineTaskCode.Name = "LineTaskCode";
-            this.LineTaskCode.Size = new System.Drawing.Size(42, 21);
+            this.LineTaskCode.Size = new System.Drawing.Size(50, 21);
             this.LineTaskCode.TabIndex = 11;
             // 
             // label16
             // 
             this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(116, 27);
+            this.label16.Location = new System.Drawing.Point(124, 27);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(76, 13);
             this.label16.TabIndex = 15;
@@ -251,15 +252,15 @@
             "E122",
             "E123",
             "E124"});
-            this.LineExCode.Location = new System.Drawing.Point(198, 30);
+            this.LineExCode.Location = new System.Drawing.Point(206, 30);
             this.LineExCode.Name = "LineExCode";
-            this.LineExCode.Size = new System.Drawing.Size(42, 21);
+            this.LineExCode.Size = new System.Drawing.Size(50, 21);
             this.LineExCode.TabIndex = 12;
             // 
             // label17
             // 
             this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(246, 27);
+            this.label17.Location = new System.Drawing.Point(262, 27);
             this.label17.Name = "label17";
             this.label17.Size = new System.Drawing.Size(69, 13);
             this.label17.TabIndex = 16;
@@ -280,20 +281,10 @@
             "A109",
             "A110",
             "A111"});
-            this.LineActCode.Location = new System.Drawing.Point(321, 30);
+            this.LineActCode.Location = new System.Drawing.Point(337, 30);
             this.LineActCode.Name = "LineActCode";
-            this.LineActCode.Size = new System.Drawing.Size(42, 21);
+            this.LineActCode.Size = new System.Drawing.Size(50, 21);
             this.LineActCode.TabIndex = 13;
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(381, 27);
-            this.label8.Margin = new System.Windows.Forms.Padding(15, 0, 15, 0);
-            this.label8.Name = "label8";
-            this.label8.Padding = new System.Windows.Forms.Padding(20, 0, 20, 0);
-            this.label8.Size = new System.Drawing.Size(40, 13);
-            this.label8.TabIndex = 36;
             // 
             // label21
             // 
@@ -462,16 +453,6 @@
             this.btn_Del.UseVisualStyleBackColor = true;
             this.btn_Del.Click += new System.EventHandler(this.btn_Del_Click);
             // 
-            // btn_Export
-            // 
-            this.btn_Export.Location = new System.Drawing.Point(263, 12);
-            this.btn_Export.Name = "btn_Export";
-            this.btn_Export.Size = new System.Drawing.Size(105, 23);
-            this.btn_Export.TabIndex = 26;
-            this.btn_Export.Text = "Export to LEDES";
-            this.btn_Export.UseVisualStyleBackColor = true;
-            this.btn_Export.Click += new System.EventHandler(this.btn_Export_Click);
-            // 
             // label1
             // 
             this.label1.AutoSize = true;
@@ -631,26 +612,6 @@
             this.InvoiceClientID.Size = new System.Drawing.Size(60, 20);
             this.InvoiceClientID.TabIndex = 8;
             // 
-            // btn_NewInvoice
-            // 
-            this.btn_NewInvoice.Location = new System.Drawing.Point(12, 12);
-            this.btn_NewInvoice.Name = "btn_NewInvoice";
-            this.btn_NewInvoice.Size = new System.Drawing.Size(75, 23);
-            this.btn_NewInvoice.TabIndex = 0;
-            this.btn_NewInvoice.Text = "New Invoice";
-            this.btn_NewInvoice.UseVisualStyleBackColor = true;
-            this.btn_NewInvoice.Click += new System.EventHandler(this.btn_NewInvoice_Click);
-            // 
-            // btn_Quit
-            // 
-            this.btn_Quit.Location = new System.Drawing.Point(374, 12);
-            this.btn_Quit.Name = "btn_Quit";
-            this.btn_Quit.Size = new System.Drawing.Size(75, 23);
-            this.btn_Quit.TabIndex = 27;
-            this.btn_Quit.Text = "Exit";
-            this.btn_Quit.UseVisualStyleBackColor = true;
-            this.btn_Quit.Click += new System.EventHandler(this.btn_Quit_Click);
-            // 
             // txt_Inv_Total
             // 
             this.txt_Inv_Total.BorderStyle = System.Windows.Forms.BorderStyle.None;
@@ -661,28 +622,70 @@
             this.txt_Inv_Total.Size = new System.Drawing.Size(193, 13);
             this.txt_Inv_Total.TabIndex = 28;
             // 
+            // menuStrip1
+            // 
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.fileToolStripMenuItem,
+            this.exitToolStripMenuItem});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(660, 24);
+            this.menuStrip1.TabIndex = 29;
+            this.menuStrip1.Text = "menuStrip1";
+            // 
+            // fileToolStripMenuItem
+            // 
+            this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.newToolStripMenuItem,
+            this.exportToolStripMenuItem});
+            this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+            this.fileToolStripMenuItem.Text = "File";
+            // 
+            // newToolStripMenuItem
+            // 
+            this.newToolStripMenuItem.Name = "newToolStripMenuItem";
+            this.newToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.newToolStripMenuItem.Text = "New";
+            this.newToolStripMenuItem.Click += new System.EventHandler(this.btn_NewInvoice_Click);
+            // 
+            // exportToolStripMenuItem
+            // 
+            this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
+            this.exportToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.exportToolStripMenuItem.Text = "Export";
+            this.exportToolStripMenuItem.Click += new System.EventHandler(this.btn_Export_Click);
+            // 
+            // exitToolStripMenuItem
+            // 
+            this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+            this.exitToolStripMenuItem.Text = "Exit";
+            this.exitToolStripMenuItem.Click += new System.EventHandler(this.btn_Quit_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(660, 361);
             this.Controls.Add(this.txt_Inv_Total);
-            this.Controls.Add(this.btn_Quit);
-            this.Controls.Add(this.btn_NewInvoice);
             this.Controls.Add(this.flowLayoutPanel2);
-            this.Controls.Add(this.btn_Export);
             this.Controls.Add(this.btn_Del);
             this.Controls.Add(this.btn_Load);
             this.Controls.Add(this.btn_Save);
             this.Controls.Add(this.btn_New);
             this.Controls.Add(this.lLines);
             this.Controls.Add(this.flowLayoutPanel1);
+            this.Controls.Add(this.menuStrip1);
+            this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
             this.Text = "LEDES Generator";
             this.flowLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.PerformLayout();
             this.flowLayoutPanel2.ResumeLayout(false);
             this.flowLayoutPanel2.PerformLayout();
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -696,7 +699,6 @@
         private System.Windows.Forms.Button btn_Save;
         private System.Windows.Forms.Button btn_Load;
         private System.Windows.Forms.Button btn_Del;
-        private System.Windows.Forms.Button btn_Export;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
@@ -721,7 +723,6 @@
         private System.Windows.Forms.DateTimePicker InvoiceDate;
         private System.Windows.Forms.DateTimePicker BillStart;
         private System.Windows.Forms.DateTimePicker BillEnd;
-        private System.Windows.Forms.Button btn_NewInvoice;
         private System.Windows.Forms.DateTimePicker LineDate;
         private System.Windows.Forms.TextBox LineDesc;
         private System.Windows.Forms.Label spacer2;
@@ -736,13 +737,16 @@
         private System.Windows.Forms.TextBox InvoiceTIN;
         private System.Windows.Forms.TextBox InvoiceMatterID;
         private System.Windows.Forms.TextBox InvoiceClientID;
-        private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.Button btn_Quit;
         private System.Windows.Forms.ComboBox LineFE;
         private System.Windows.Forms.ComboBox LineTaskCode;
         private System.Windows.Forms.ComboBox LineExCode;
         private System.Windows.Forms.ComboBox LineActCode;
         private System.Windows.Forms.TextBox txt_Inv_Total;
+        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem newToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem exportToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
     }
 }
 

@@ -12,8 +12,8 @@ namespace ledescreator
 {
     public partial class Form1 : Form
     {
-        public String location = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
-        public String dateformat = "yyyyMMdd";
+        public string location = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+        public string dateformat = "yyyyMMdd";
         #region Constructor
         public Form1()
         {
@@ -23,62 +23,62 @@ namespace ledescreator
         #region Public Methods
         public void addLine(ledes l)
         {
-            this.lLines.Items.Add(l);
+            lLines.Items.Add(l);
         }
         public double calcTotal()
         {
             double total = 0;
-            foreach (ledes l in this.lLines.Items)
+            foreach (ledes l in lLines.Items)
             {
                 total += l.LINE_ITEM_TOTAL;
             }
             return total;
         }
-        public String toDollars(double c)
+        public string toDollars(double c)
         {
             if (c == 0)
             {
                 return "";
             }
-            String dollar = c.ToString("#######0.00");
+            string dollar = c.ToString("#######0.00");
             return dollar;
         }
         public void updateTotals()
         {
             //correct the totals for all items
-            foreach (ledes i in this.lLines.Items)
+            foreach (ledes i in lLines.Items)
             {
-                i.INVOICE_DATE = this.InvoiceDate.Value;
-                i.INVOICE_NUMBER = this.InvoiceNum.Text;
-                i.CLIENT_ID = this.InvoiceClientID.Text;
-                i.LAW_FIRM_MATTER_ID = this.InvoiceMatterID.Text;
-                i.CLIENT_MATTER_ID = this.InvoiceMatterID.Text;
-                i.LAW_FIRM_ID = this.InvoiceTIN.Text;
-                i.BILLING_START_DATE = this.BillStart.Value;
-                i.BILLING_END_DATE = this.BillEnd.Value;
-                i.INVOICE_DESCRIPTION = this.InvoiceDesc.Text;
+                i.INVOICE_DATE = InvoiceDate.Value;
+                i.INVOICE_NUMBER = InvoiceNum.Text;
+                i.CLIENT_ID = InvoiceClientID.Text;
+                i.LAW_FIRM_MATTER_ID = InvoiceMatterID.Text;
+                i.CLIENT_MATTER_ID = InvoiceMatterID.Text;
+                i.LAW_FIRM_ID = InvoiceTIN.Text;
+                i.BILLING_START_DATE = BillStart.Value;
+                i.BILLING_END_DATE = BillEnd.Value;
+                i.INVOICE_DESCRIPTION = InvoiceDesc.Text;
                 i.INVOICE_TOTAL = calcTotal();
             }
-            this.txt_Inv_Total.Text = "Total: $" + toDollars(calcTotal());
+            txt_Inv_Total.Text = "Total: $" + toDollars(calcTotal());
         }
         #endregion
         #region Event Handlers
         private void btn_New_Click(object sender, EventArgs e)
         {
-            foreach(Control c in this.flowLayoutPanel1.Controls)
+            foreach(Control c in flowLayoutPanel1.Controls)
             {
                 if (c is TextBox)
                 {
-                    c.Text = String.Empty;
+                    c.Text = string.Empty;
                 }
                 if (c is DateTimePicker)
                 {
-                    c.Text = String.Empty;
+                    c.Text = string.Empty;
                 }
-                this.LineFE.SelectedIndex = -1;
-                this.LineExCode.SelectedIndex = -1;
-                this.LineActCode.SelectedIndex = -1;
-                this.LineActCode.SelectedIndex = -1;
+                LineFE.SelectedIndex = -1;
+                LineExCode.SelectedIndex = -1;
+                LineActCode.SelectedIndex = -1;
+                LineActCode.SelectedIndex = -1;
             }
         }
 
@@ -88,38 +88,38 @@ namespace ledescreator
             //Invoice common things are set across for each item as I go.
             //There is certainly a better way to do this but I'm not working that hard on this.
             //Line item number is the next in the list
-            l.LINE_ITEM_NUMBER = this.lLines.Items.Count + 1;
-            l.EXP_FEE_INV_ADJ_TYPE = this.LineFE.Text;
-            l.LINE_ITEM_DATE = this.LineDate.Value;
-            l.LINE_ITEM_TASK_CODE = this.LineTaskCode.Text;
-            l.LINE_ITEM_EXPENSE_CODE = this.LineExCode.Text;
-            l.LINE_ITEM_ACTIVITY_CODE = this.LineActCode.Text;
-            l.LINE_ITEM_DESCRIPTION = this.LineDesc.Text;
-            l.TIMEKEEPER_ID = this.LineKeeperID.Text;
-            l.TIMEKEEPER_NAME = this.LineKeeperName.Text;
-            l.TIMEKEEPER_CLASSIFICATION = this.LineKeeperClas.Text;
+            l.LINE_ITEM_NUMBER = lLines.Items.Count + 1;
+            l.EXP_FEE_INV_ADJ_TYPE = LineFE.Text;
+            l.LINE_ITEM_DATE = LineDate.Value;
+            l.LINE_ITEM_TASK_CODE = LineTaskCode.Text;
+            l.LINE_ITEM_EXPENSE_CODE = LineExCode.Text;
+            l.LINE_ITEM_ACTIVITY_CODE = LineActCode.Text;
+            l.LINE_ITEM_DESCRIPTION = LineDesc.Text;
+            l.TIMEKEEPER_ID = LineKeeperID.Text;
+            l.TIMEKEEPER_NAME = LineKeeperName.Text;
+            l.TIMEKEEPER_CLASSIFICATION = LineKeeperClas.Text;
             //Deal with converting to numbers
             int num;
             double doub;
-            if (int.TryParse(this.LineUnit.Text, out num))
+            if (int.TryParse(LineUnit.Text, out num))
             {
-                l.LINE_ITEM_NUMBER_OF_UNITS = int.Parse(this.LineUnit.Text);
+                l.LINE_ITEM_NUMBER_OF_UNITS = int.Parse(LineUnit.Text);
             }
             else
             {
                 l.LINE_ITEM_NUMBER_OF_UNITS = 0;
             }
-            if (double.TryParse(this.LineAdj.Text,out doub))
+            if (double.TryParse(LineAdj.Text,out doub))
             {
-                l.LINE_ITEM_ADJUSTMENT_AMOUNT = double.Parse(this.LineAdj.Text);
+                l.LINE_ITEM_ADJUSTMENT_AMOUNT = double.Parse(LineAdj.Text);
             }
             else
             {
                 l.LINE_ITEM_ADJUSTMENT_AMOUNT = 0;
             }
-            if (double.TryParse(this.LinePrice.Text,out doub))
+            if (double.TryParse(LinePrice.Text,out doub))
             {
-                l.LINE_ITEM_UNIT_COST = double.Parse(this.LinePrice.Text);
+                l.LINE_ITEM_UNIT_COST = double.Parse(LinePrice.Text);
             }
             else
             {
@@ -142,48 +142,48 @@ namespace ledescreator
 
         private void btn_Load_Click(object sender, EventArgs e)
         {
-            if (this.lLines.SelectedIndex == -1)
+            if (lLines.SelectedIndex == -1)
             {
                 MessageBox.Show("Please select an item to load.");
             }
             else
             {
                 //grab the ledes item
-                ledes l = (ledes)this.lLines.Items[this.lLines.SelectedIndex];
+                ledes l = (ledes)lLines.Items[lLines.SelectedIndex];
                 //fill the invoice details
-                this.InvoiceDate.Value = l.INVOICE_DATE;
-                this.InvoiceNum.Text = l.INVOICE_NUMBER;
-                this.InvoiceClientID.Text = l.CLIENT_ID;
-                this.InvoiceMatterID.Text = l.LAW_FIRM_MATTER_ID;
-                this.BillStart.Value = l.BILLING_START_DATE;
-                this.BillEnd.Value = l.BILLING_END_DATE;
-                this.InvoiceDesc.Text = l.INVOICE_DESCRIPTION;
-                this.InvoiceTIN.Text = l.LAW_FIRM_ID;
+                InvoiceDate.Value = l.INVOICE_DATE;
+                InvoiceNum.Text = l.INVOICE_NUMBER;
+                InvoiceClientID.Text = l.CLIENT_ID;
+                InvoiceMatterID.Text = l.LAW_FIRM_MATTER_ID;
+                BillStart.Value = l.BILLING_START_DATE;
+                BillEnd.Value = l.BILLING_END_DATE;
+                InvoiceDesc.Text = l.INVOICE_DESCRIPTION;
+                InvoiceTIN.Text = l.LAW_FIRM_ID;
                 //Line item fields
-                this.LineFE.Text = l.EXP_FEE_INV_ADJ_TYPE;
-                this.LineUnit.Text = l.LINE_ITEM_NUMBER_OF_UNITS.ToString();
-                this.LineAdj.Text = l.LINE_ITEM_ADJUSTMENT_AMOUNT.ToString();
-                this.LineDate.Value = l.LINE_ITEM_DATE;
-                this.LineTaskCode.Text = l.LINE_ITEM_TASK_CODE;
-                this.LineExCode.Text = l.LINE_ITEM_EXPENSE_CODE;
-                this.LineActCode.Text = l.LINE_ITEM_ACTIVITY_CODE;
-                this.LineKeeperID.Text = l.TIMEKEEPER_ID;
-                this.LineDesc.Text = l.LINE_ITEM_DESCRIPTION;
-                this.LinePrice.Text = l.LINE_ITEM_UNIT_COST.ToString();
-                this.LineKeeperName.Text = l.TIMEKEEPER_NAME;
-                this.LineKeeperClas.Text = l.TIMEKEEPER_CLASSIFICATION;
+                LineFE.Text = l.EXP_FEE_INV_ADJ_TYPE;
+                LineUnit.Text = l.LINE_ITEM_NUMBER_OF_UNITS.ToString();
+                LineAdj.Text = l.LINE_ITEM_ADJUSTMENT_AMOUNT.ToString();
+                LineDate.Value = l.LINE_ITEM_DATE;
+                LineTaskCode.Text = l.LINE_ITEM_TASK_CODE;
+                LineExCode.Text = l.LINE_ITEM_EXPENSE_CODE;
+                LineActCode.Text = l.LINE_ITEM_ACTIVITY_CODE;
+                LineKeeperID.Text = l.TIMEKEEPER_ID;
+                LineDesc.Text = l.LINE_ITEM_DESCRIPTION;
+                LinePrice.Text = l.LINE_ITEM_UNIT_COST.ToString();
+                LineKeeperName.Text = l.TIMEKEEPER_NAME;
+                LineKeeperClas.Text = l.TIMEKEEPER_CLASSIFICATION;
             }
         }
 
         private void btn_Del_Click(object sender, EventArgs e)
         {
-            if (this.lLines.SelectedIndex == -1)
+            if (lLines.SelectedIndex == -1)
             {
                 MessageBox.Show("Please select an item to delete.");
             }
             else
             {
-                this.lLines.Items.Remove(this.lLines.SelectedItem);
+                lLines.Items.Remove(lLines.SelectedItem);
                 updateTotals();
             }
         }
@@ -191,15 +191,15 @@ namespace ledescreator
         private void btn_Export_Click(object sender, EventArgs e)
         {
             updateTotals();
-            List<String> lines = new List<String>();
+            List<string> lines = new List<string>();
             //add header information for ledes files
             lines.Add("LEDES1998B[]");
             lines.Add("INVOICE_DATE|INVOICE_NUMBER|CLIENT_ID|LAW_FIRM_MATTER_ID|INVOICE_TOTAL|BILLING_START_DATE|BILLING_END_DATE|INVOICE_DESCRIPTION|LINE_ITEM_NUMBER|EXP/FEE/INV_ADJ_TYPE|LINE_ITEM_NUMBER_OF_UNITS|LINE_ITEM_ADJUSTMENT_AMOUNT|LINE_ITEM_TOTAL|LINE_ITEM_DATE|LINE_ITEM_TASK_CODE|LINE_ITEM_EXPENSE_CODE|LINE_ITEM_ACTIVITY_CODE|TIMEKEEPER_ID|LINE_ITEM_DESCRIPTION|LAW_FIRM_ID|LINE_ITEM_UNIT_COST|TIMEKEEPER_NAME|TIMEKEEPER_CLASSIFICATION|CLIENT_MATTER_ID[]");
             //add each item as a row
-            foreach (ledes l in this.lLines.Items)
+            foreach (ledes l in lLines.Items)
             {
 
-                String newLine = "";
+                string newLine = "";
                 newLine += l.INVOICE_DATE.ToString(dateformat) + "|";
                 newLine += l.INVOICE_NUMBER + "|";
                 newLine += l.CLIENT_ID + "|";
@@ -237,9 +237,9 @@ namespace ledescreator
             //Need to change the Constructor used here. Should confirm that the Encoding is correct.
             //Default Encoding is UTF8 which seems to cause issues with the SQL procedure.
             //Should switch to Encosing.ASCII instead as that seems to work.
-            using (System.IO.StreamWriter file = new System.IO.StreamWriter(@location + "\\ledes.txt"))
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter(@location + "\\ledes.txt", false, Encoding.ASCII))
             {
-                foreach (String line in lines)
+                foreach (string line in lines)
                 {
                     file.Write(line + "\r\n"); //Changed from file.WriteLine and added \r\n
                 }
@@ -249,38 +249,38 @@ namespace ledescreator
 
         private void btn_NewInvoice_Click(object sender, EventArgs e)
         {
-            foreach (Control c in this.flowLayoutPanel1.Controls)
+            foreach (Control c in flowLayoutPanel1.Controls)
             {
                 if (c is TextBox)
                 {
-                    c.Text = String.Empty;
+                    c.Text = string.Empty;
                 }
                 if (c is DateTimePicker)
                 {
-                    c.Text = String.Empty;
+                    c.Text = string.Empty;
                 }
             }
-            foreach (Control c in this.flowLayoutPanel2.Controls)
+            foreach (Control c in flowLayoutPanel2.Controls)
             {
                 if (c is TextBox)
                 {
-                    c.Text = String.Empty;
+                    c.Text = string.Empty;
                 }
                 if (c is DateTimePicker)
                 {
-                    c.Text = String.Empty;
+                    c.Text = string.Empty;
                 }
             }
-            this.LineFE.SelectedIndex = -1;
-            this.LineExCode.SelectedIndex = -1;
-            this.LineActCode.SelectedIndex = -1;
-            this.LineActCode.SelectedIndex = -1;
-            this.lLines.Items.Clear();
+            LineFE.SelectedIndex = -1;
+            LineExCode.SelectedIndex = -1;
+            LineActCode.SelectedIndex = -1;
+            LineActCode.SelectedIndex = -1;
+            lLines.Items.Clear();
         }
 
         private void btn_Quit_Click(object sender, EventArgs e)
         {
-            this.Close();
+            Close();
         }
 
         private void LineFE_SelectedIndexChanged(object sender, EventArgs e)
@@ -288,24 +288,24 @@ namespace ledescreator
             switch (LineFE.Text)
             {
                 case "E":
-                    LineActCode.Text = String.Empty;
+                    LineActCode.Text = string.Empty;
                     LineActCode.Enabled = false;
                     LineExCode.Enabled = true;
-                    LineTaskCode.Text = String.Empty;
+                    LineTaskCode.Text = string.Empty;
                     LineTaskCode.Enabled = false;
                     break;
                 case "F":
                     LineActCode.Enabled = true;
-                    LineExCode.Text = String.Empty;
+                    LineExCode.Text = string.Empty;
                     LineExCode.Enabled = false;
                     LineTaskCode.Enabled = true;
                     break;
                 default:
-                    LineActCode.Text = String.Empty;
+                    LineActCode.Text = string.Empty;
                     LineActCode.Enabled = true;
-                    LineExCode.Text = String.Empty;
+                    LineExCode.Text = string.Empty;
                     LineExCode.Enabled = true;
-                    LineTaskCode.Text = String.Empty;
+                    LineTaskCode.Text = string.Empty;
                     LineTaskCode.Enabled = true;
                     break;
             }
