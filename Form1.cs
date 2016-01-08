@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static ledescreator.Ledes;
 
 namespace ledescreator
 {
@@ -20,7 +21,7 @@ namespace ledescreator
             InitializeComponent();
         }
         #endregion
-        #region Public Methods
+        #region Methods
         public void addLine(ledes l)
         {
             lLines.Items.Add(l);
@@ -61,8 +62,33 @@ namespace ledescreator
             }
             txt_Inv_Total.Text = "Total: $" + toDollars(calcTotal());
         }
+        private void FillFields(ledes l)
+        {
+            InvoiceDate.Value = l.INVOICE_DATE;
+            InvoiceNum.Text = l.INVOICE_NUMBER;
+            InvoiceClientID.Text = l.CLIENT_ID;
+            InvoiceMatterID.Text = l.LAW_FIRM_MATTER_ID;
+            BillStart.Value = l.BILLING_START_DATE;
+            BillEnd.Value = l.BILLING_END_DATE;
+            InvoiceDesc.Text = l.INVOICE_DESCRIPTION;
+            InvoiceTIN.Text = l.LAW_FIRM_ID;
+            //Line item fields
+            LineFE.Text = l.EXP_FEE_INV_ADJ_TYPE;
+            LineUnit.Text = l.LINE_ITEM_NUMBER_OF_UNITS.ToString();
+            LineAdj.Text = l.LINE_ITEM_ADJUSTMENT_AMOUNT.ToString();
+            LineDate.Value = l.LINE_ITEM_DATE;
+            LineTaskCode.Text = l.LINE_ITEM_TASK_CODE;
+            LineExCode.Text = l.LINE_ITEM_EXPENSE_CODE;
+            LineActCode.Text = l.LINE_ITEM_ACTIVITY_CODE;
+            LineKeeperID.Text = l.TIMEKEEPER_ID;
+            LineDesc.Text = l.LINE_ITEM_DESCRIPTION;
+            LinePrice.Text = l.LINE_ITEM_UNIT_COST.ToString();
+            LineKeeperName.Text = l.TIMEKEEPER_NAME;
+            LineKeeperClas.Text = l.TIMEKEEPER_CLASSIFICATION;
+        }
         #endregion
         #region Event Handlers
+        #region Buttons
         private void btn_New_Click(object sender, EventArgs e)
         {
             foreach(Control c in flowLayoutPanel1.Controls)
@@ -151,27 +177,7 @@ namespace ledescreator
                 //grab the ledes item
                 ledes l = (ledes)lLines.Items[lLines.SelectedIndex];
                 //fill the invoice details
-                InvoiceDate.Value = l.INVOICE_DATE;
-                InvoiceNum.Text = l.INVOICE_NUMBER;
-                InvoiceClientID.Text = l.CLIENT_ID;
-                InvoiceMatterID.Text = l.LAW_FIRM_MATTER_ID;
-                BillStart.Value = l.BILLING_START_DATE;
-                BillEnd.Value = l.BILLING_END_DATE;
-                InvoiceDesc.Text = l.INVOICE_DESCRIPTION;
-                InvoiceTIN.Text = l.LAW_FIRM_ID;
-                //Line item fields
-                LineFE.Text = l.EXP_FEE_INV_ADJ_TYPE;
-                LineUnit.Text = l.LINE_ITEM_NUMBER_OF_UNITS.ToString();
-                LineAdj.Text = l.LINE_ITEM_ADJUSTMENT_AMOUNT.ToString();
-                LineDate.Value = l.LINE_ITEM_DATE;
-                LineTaskCode.Text = l.LINE_ITEM_TASK_CODE;
-                LineExCode.Text = l.LINE_ITEM_EXPENSE_CODE;
-                LineActCode.Text = l.LINE_ITEM_ACTIVITY_CODE;
-                LineKeeperID.Text = l.TIMEKEEPER_ID;
-                LineDesc.Text = l.LINE_ITEM_DESCRIPTION;
-                LinePrice.Text = l.LINE_ITEM_UNIT_COST.ToString();
-                LineKeeperName.Text = l.TIMEKEEPER_NAME;
-                LineKeeperClas.Text = l.TIMEKEEPER_CLASSIFICATION;
+                FillFields(l);
             }
         }
 
@@ -187,14 +193,25 @@ namespace ledescreator
                 updateTotals();
             }
         }
-
+        #endregion
+        #region Menu Items
         private void btn_Export_Click(object sender, EventArgs e)
         {
+            string saveLocation;
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Filter = "LEDES 98B | *.txt";
+            if (sfd.ShowDialog() == DialogResult.OK)
+            {
+                saveLocation = sfd.FileName;
+            }
+            else
+                return;
+            #region Create File Data
             updateTotals();
             List<string> lines = new List<string>();
             //add header information for ledes files
-            lines.Add("LEDES1998B[]");
-            lines.Add("INVOICE_DATE|INVOICE_NUMBER|CLIENT_ID|LAW_FIRM_MATTER_ID|INVOICE_TOTAL|BILLING_START_DATE|BILLING_END_DATE|INVOICE_DESCRIPTION|LINE_ITEM_NUMBER|EXP/FEE/INV_ADJ_TYPE|LINE_ITEM_NUMBER_OF_UNITS|LINE_ITEM_ADJUSTMENT_AMOUNT|LINE_ITEM_TOTAL|LINE_ITEM_DATE|LINE_ITEM_TASK_CODE|LINE_ITEM_EXPENSE_CODE|LINE_ITEM_ACTIVITY_CODE|TIMEKEEPER_ID|LINE_ITEM_DESCRIPTION|LAW_FIRM_ID|LINE_ITEM_UNIT_COST|TIMEKEEPER_NAME|TIMEKEEPER_CLASSIFICATION|CLIENT_MATTER_ID[]");
+            lines.Add(HeadLine);
+            lines.Add(topLine);
             //add each item as a row
             foreach (ledes l in lLines.Items)
             {
@@ -233,18 +250,58 @@ namespace ledescreator
                 newLine += l.CLIENT_MATTER_ID + "[]";
                 lines.Add(newLine);
             }
-            //save the file to the desktop
-            //Need to change the Constructor used here. Should confirm that the Encoding is correct.
-            //Default Encoding is UTF8 which seems to cause issues with the SQL procedure.
-            //Should switch to Encosing.ASCII instead as that seems to work.
-            using (System.IO.StreamWriter file = new System.IO.StreamWriter(@location + "\\ledes.txt", false, Encoding.ASCII))
+            #endregion
+            #region SaveFile
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter(@saveLocation, false, Encoding.ASCII))
             {
                 foreach (string line in lines)
                 {
                     file.Write(line + "\r\n"); //Changed from file.WriteLine and added \r\n
                 }
             }
-            MessageBox.Show("Exported file to " + location + "\\ledes.txt");
+            #endregion
+        }
+
+        private void btn_Import_Click(object sender, EventArgs e)
+        {
+            string fileLocation;
+            OpenFileDialog lfd = new OpenFileDialog();
+            lfd.Filter = "Ledes 98B | *.txt";
+            if (lfd.ShowDialog() == DialogResult.OK)
+            {
+                fileLocation = lfd.FileName;
+            }
+            else
+                return;
+            #region Check File
+            try
+            {
+                List<string> lines = new List<string>();
+                using (System.IO.StreamReader file = new System.IO.StreamReader(fileLocation, Encoding.ASCII))
+                {
+                    string line;
+                    while ((line = file.ReadLine()) != null)
+                    {
+                        lines.Add(line);
+                    }
+                }
+                if (lines[0] != HeadLine || lines[1] != topLine)
+                {
+                    throw new InvalidLedesFile("Bad Header on LEDES file");
+                }
+                for(int n = 2; n < lines.Count; n ++)
+                {
+                    string s = lines[n];
+                    ledes l = parseToLedes(s);
+                    addLine(l);
+                }
+                updateTotals();
+            }
+            catch (Exception error)
+            {
+                MessageBox.Show(error.InnerException.Message, error.Message);
+            }
+            #endregion
         }
 
         private void btn_NewInvoice_Click(object sender, EventArgs e)
@@ -282,7 +339,7 @@ namespace ledescreator
         {
             Close();
         }
-
+        #endregion
         private void LineFE_SelectedIndexChanged(object sender, EventArgs e)
         {
             switch (LineFE.Text)
@@ -313,3 +370,4 @@ namespace ledescreator
         #endregion
     }
 }
+;
