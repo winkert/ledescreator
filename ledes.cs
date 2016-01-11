@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ledescreator
 {
@@ -35,7 +31,7 @@ namespace ledescreator
         //override ToString()
         public override string ToString()
         {
-            return string.Format("{0} : {1}", EXP_FEE_INV_ADJ_TYPE, LINE_ITEM_TOTAL);
+            return string.Format("{0} : {1}", EXP_FEE_INV_ADJ_TYPE, Utilities.ParseAsCurrency(LINE_ITEM_TOTAL, true));
         } 
     }
 
@@ -57,20 +53,20 @@ namespace ledescreator
             ledes l = new ledes();
             try
             {
-                l.INVOICE_DATE = grabPart(line,1) == string.Empty? new DateTime() : convertToDate(grabPart(line, 1));
+                l.INVOICE_DATE = grabPart(line,1) == string.Empty? new DateTime() : Utilities.convertToDate(grabPart(line, 1));
                 l.INVOICE_NUMBER = grabPart(line, 2);
                 l.CLIENT_ID = grabPart(line, 3);
                 l.LAW_FIRM_MATTER_ID = grabPart(line, 4);
                 l.INVOICE_TOTAL = grabPart(line, 5) == string.Empty ? 0.00 : double.Parse(grabPart(line, 5));
-                l.BILLING_START_DATE = grabPart(line, 6) == string.Empty ? new DateTime() : convertToDate(grabPart(line, 6));
-                l.BILLING_END_DATE = grabPart(line, 7) == string.Empty ? new DateTime() : convertToDate(grabPart(line, 7));
+                l.BILLING_START_DATE = grabPart(line, 6) == string.Empty ? new DateTime() : Utilities.convertToDate(grabPart(line, 6));
+                l.BILLING_END_DATE = grabPart(line, 7) == string.Empty ? new DateTime() : Utilities.convertToDate(grabPart(line, 7));
                 l.INVOICE_DESCRIPTION = grabPart(line, 8);
                 l.LINE_ITEM_NUMBER = grabPart(line, 1) == string.Empty ? 0 : int.Parse(grabPart(line, 9));
                 l.EXP_FEE_INV_ADJ_TYPE = grabPart(line, 10);
                 l.LINE_ITEM_NUMBER_OF_UNITS = grabPart(line, 11) == string.Empty ? 0.00 : double.Parse(grabPart(line, 11));
                 l.LINE_ITEM_ADJUSTMENT_AMOUNT = grabPart(line, 12) == string.Empty ? 0.00 : double.Parse(grabPart(line, 12));
                 l.LINE_ITEM_TOTAL = grabPart(line, 13) == string.Empty ? 0.00 : double.Parse(grabPart(line, 13));
-                l.LINE_ITEM_DATE = grabPart(line, 14) == string.Empty ? new DateTime() : convertToDate(grabPart(line, 14));
+                l.LINE_ITEM_DATE = grabPart(line, 14) == string.Empty ? new DateTime() : Utilities.convertToDate(grabPart(line, 14));
                 l.LINE_ITEM_TASK_CODE = grabPart(line, 15);
                 l.LINE_ITEM_EXPENSE_CODE = grabPart(line, 16);
                 l.LINE_ITEM_ACTIVITY_CODE = grabPart(line, 17);
@@ -102,13 +98,6 @@ namespace ledescreator
                 p = line.Substring(start, len).Replace("|",string.Empty);
             Console.WriteLine(p);
             return p;
-        }
-        private static DateTime convertToDate(string d)
-        {
-            int yyyy = int.Parse(d.Substring(0,4));
-            int mm = int.Parse(d.Substring(4,2));
-            int dd = int.Parse(d.Substring(6,2));
-            return new DateTime(yyyy, mm, dd);
         }
     }
 }

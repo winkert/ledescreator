@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using static ledescreator.Ledes;
 
@@ -35,17 +31,9 @@ namespace ledescreator
             }
             return total;
         }
-        public string toDollars(double c)
-        {
-            if (c == 0)
-            {
-                return "";
-            }
-            string dollar = c.ToString("#######0.00");
-            return dollar;
-        }
         public void updateTotals()
         {
+            DisplayInvoice(lLines.Items.OfType<ledes>().ToList().First());
             //correct the totals for all items
             foreach (ledes i in lLines.Items)
             {
@@ -60,9 +48,10 @@ namespace ledescreator
                 i.INVOICE_DESCRIPTION = InvoiceDesc.Text;
                 i.INVOICE_TOTAL = calcTotal();
             }
-            txt_Inv_Total.Text = "Total: $" + toDollars(calcTotal());
+            txt_Inv_Total.Text = "Total: " + Utilities.ParseAsCurrency(calcTotal(), true);
+            
         }
-        private void FillFields(ledes l)
+        private void DisplayInvoice(ledes l)
         {
             InvoiceDate.Value = l.INVOICE_DATE;
             InvoiceNum.Text = l.INVOICE_NUMBER;
@@ -72,6 +61,17 @@ namespace ledescreator
             BillEnd.Value = l.BILLING_END_DATE;
             InvoiceDesc.Text = l.INVOICE_DESCRIPTION;
             InvoiceTIN.Text = l.LAW_FIRM_ID;
+        }
+        private void FillFields(ledes l)
+        {
+            //InvoiceDate.Value = l.INVOICE_DATE;
+            //InvoiceNum.Text = l.INVOICE_NUMBER;
+            //InvoiceClientID.Text = l.CLIENT_ID;
+            //InvoiceMatterID.Text = l.LAW_FIRM_MATTER_ID;
+            //BillStart.Value = l.BILLING_START_DATE;
+            //BillEnd.Value = l.BILLING_END_DATE;
+            //InvoiceDesc.Text = l.INVOICE_DESCRIPTION;
+            //InvoiceTIN.Text = l.LAW_FIRM_ID;
             //Line item fields
             LineFE.Text = l.EXP_FEE_INV_ADJ_TYPE;
             LineUnit.Text = l.LINE_ITEM_NUMBER_OF_UNITS.ToString();
@@ -199,7 +199,7 @@ namespace ledescreator
         {
             string saveLocation;
             SaveFileDialog sfd = new SaveFileDialog();
-            sfd.Filter = "LEDES 98B | *.txt";
+            sfd.Filter = "LEDES 98B|*.txt";
             if (sfd.ShowDialog() == DialogResult.OK)
             {
                 saveLocation = sfd.FileName;
@@ -221,7 +221,7 @@ namespace ledescreator
                 newLine += l.INVOICE_NUMBER + "|";
                 newLine += l.CLIENT_ID + "|";
                 newLine += l.LAW_FIRM_MATTER_ID + "|";
-                newLine += toDollars(l.INVOICE_TOTAL) + "|";
+                newLine += Utilities.ParseAsCurrency(l.INVOICE_TOTAL) + "|";
                 newLine += l.BILLING_START_DATE.ToString(dateformat) + "|";
                 newLine += l.BILLING_END_DATE.ToString(dateformat) + "|";
                 newLine += l.INVOICE_DESCRIPTION + "|";
@@ -230,13 +230,13 @@ namespace ledescreator
                 newLine += l.LINE_ITEM_NUMBER_OF_UNITS + "|";
                 if (l.LINE_ITEM_ADJUSTMENT_AMOUNT > 0)
                 {
-                    newLine += toDollars(l.LINE_ITEM_ADJUSTMENT_AMOUNT) + "|";
+                    newLine += Utilities.ParseAsCurrency(l.LINE_ITEM_ADJUSTMENT_AMOUNT) + "|";
                 }
                 else
                 {
                     newLine += "|";
                 }
-                newLine += toDollars(l.LINE_ITEM_TOTAL) + "|";
+                newLine += Utilities.ParseAsCurrency(l.LINE_ITEM_TOTAL) + "|";
                 newLine += l.LINE_ITEM_DATE.ToString(dateformat) + "|";
                 newLine += l.LINE_ITEM_TASK_CODE + "|";
                 newLine += l.LINE_ITEM_EXPENSE_CODE + "|";
@@ -244,7 +244,7 @@ namespace ledescreator
                 newLine += l.TIMEKEEPER_ID + "|";
                 newLine += l.LINE_ITEM_DESCRIPTION + "|";
                 newLine += l.LAW_FIRM_ID + "|";
-                newLine += toDollars(l.LINE_ITEM_UNIT_COST) + "|";
+                newLine += Utilities.ParseAsCurrency(l.LINE_ITEM_UNIT_COST) + "|";
                 newLine += l.TIMEKEEPER_NAME + "|";
                 newLine += l.TIMEKEEPER_CLASSIFICATION + "|";
                 newLine += l.CLIENT_MATTER_ID + "[]";
@@ -266,7 +266,7 @@ namespace ledescreator
         {
             string fileLocation;
             OpenFileDialog lfd = new OpenFileDialog();
-            lfd.Filter = "Ledes 98B | *.txt";
+            lfd.Filter = "Ledes 98B|*.txt";
             if (lfd.ShowDialog() == DialogResult.OK)
             {
                 fileLocation = lfd.FileName;
@@ -335,10 +335,22 @@ namespace ledescreator
             lLines.Items.Clear();
         }
 
+        private void exportToPDFToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Filter = "Invoice PDF|*.pdf";
+            if(sfd.ShowDialog() == DialogResult.OK)
+            {
+                InvoicePDF pdf = new InvoicePDF(lLines.Items.OfType<ledes>().ToList());
+                pdf.SavePDF(sfd.FileName);
+            }
+        }
+
         private void btn_Quit_Click(object sender, EventArgs e)
         {
             Close();
         }
+
         #endregion
         private void LineFE_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -368,6 +380,7 @@ namespace ledescreator
             }
         }
         #endregion
+
+        
     }
 }
-;
