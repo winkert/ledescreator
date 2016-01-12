@@ -41,7 +41,7 @@ namespace ledescreator
                 i.INVOICE_NUMBER = InvoiceNum.Text;
                 i.CLIENT_ID = InvoiceClientID.Text;
                 i.LAW_FIRM_MATTER_ID = InvoiceMatterID.Text;
-                i.CLIENT_MATTER_ID = InvoiceMatterID.Text;
+                i.CLIENT_MATTER_ID = ClientMatterID.Text;
                 i.LAW_FIRM_ID = InvoiceTIN.Text;
                 i.BILLING_START_DATE = BillStart.Value;
                 i.BILLING_END_DATE = BillEnd.Value;
@@ -57,6 +57,7 @@ namespace ledescreator
             InvoiceNum.Text = l.INVOICE_NUMBER;
             InvoiceClientID.Text = l.CLIENT_ID;
             InvoiceMatterID.Text = l.LAW_FIRM_MATTER_ID;
+            ClientMatterID.Text = l.CLIENT_MATTER_ID;
             BillStart.Value = l.BILLING_START_DATE;
             BillEnd.Value = l.BILLING_END_DATE;
             InvoiceDesc.Text = l.INVOICE_DESCRIPTION;
@@ -64,14 +65,6 @@ namespace ledescreator
         }
         private void FillFields(ledes l)
         {
-            //InvoiceDate.Value = l.INVOICE_DATE;
-            //InvoiceNum.Text = l.INVOICE_NUMBER;
-            //InvoiceClientID.Text = l.CLIENT_ID;
-            //InvoiceMatterID.Text = l.LAW_FIRM_MATTER_ID;
-            //BillStart.Value = l.BILLING_START_DATE;
-            //BillEnd.Value = l.BILLING_END_DATE;
-            //InvoiceDesc.Text = l.INVOICE_DESCRIPTION;
-            //InvoiceTIN.Text = l.LAW_FIRM_ID;
             //Line item fields
             LineFE.Text = l.EXP_FEE_INV_ADJ_TYPE;
             LineUnit.Text = l.LINE_ITEM_NUMBER_OF_UNITS.ToString();
