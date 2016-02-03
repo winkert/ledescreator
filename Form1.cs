@@ -9,7 +9,6 @@ namespace ledescreator
 {
     public partial class Form1 : Form
     {
-        public string location = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
         public string dateformat = "yyyyMMdd";
         #region Constructor
         public Form1()
@@ -33,7 +32,6 @@ namespace ledescreator
         }
         public void updateTotals()
         {
-            DisplayInvoice(lLines.Items.OfType<ledes>().ToList().First());
             //correct the totals for all items
             foreach (ledes i in lLines.Items)
             {
@@ -48,8 +46,61 @@ namespace ledescreator
                 i.INVOICE_DESCRIPTION = InvoiceDesc.Text;
                 i.INVOICE_TOTAL = calcTotal();
             }
+            DisplayInvoice(lLines.Items.OfType<ledes>().ToList().First());
             txt_Inv_Total.Text = "Total: " + Utilities.ParseAsCurrency(calcTotal(), true);
-            
+        }
+        private ledes SaveFieldsToInvoice(bool SaveLine = false)
+        {
+            ledes l = new ledes();
+            try
+            {
+                l.INVOICE_DATE = InvoiceDate.Value;
+                l.INVOICE_NUMBER = InvoiceNum.Text;
+                l.CLIENT_ID = InvoiceClientID.Text;
+                l.LAW_FIRM_MATTER_ID = InvoiceMatterID.Text;
+                l.INVOICE_TOTAL = calcTotal();
+                l.BILLING_START_DATE = BillStart.Value;
+                l.BILLING_END_DATE = BillEnd.Value;
+                l.INVOICE_DESCRIPTION = InvoiceDesc.Text;
+                l.LAW_FIRM_ID = InvoiceTIN.Text;
+                l.CLIENT_MATTER_ID = ClientMatterID.Text;
+            }
+            catch (Exception e)
+            {
+                throw new InvalidLedesFile("Error saving LEDES", e);
+            }
+            try
+            {
+                if (SaveLine)
+                {
+                    l.LINE_ITEM_NUMBER = lLines.Items.Count + 1;
+                    l.EXP_FEE_INV_ADJ_TYPE = LineFE.Text;
+                    if (!double.TryParse(LineUnit.Text, out l.LINE_ITEM_NUMBER_OF_UNITS))
+                        l.LINE_ITEM_NUMBER_OF_UNITS = 0;
+                    if (!double.TryParse(LineAdj.Text, out l.LINE_ITEM_ADJUSTMENT_AMOUNT))
+                        l.LINE_ITEM_ADJUSTMENT_AMOUNT = 0;
+                    if (!double.TryParse(LinePrice.Text, out l.LINE_ITEM_UNIT_COST))
+                        l.LINE_ITEM_UNIT_COST = 0;
+                    if (l.LINE_ITEM_ADJUSTMENT_AMOUNT > 0)
+                        l.LINE_ITEM_TOTAL = l.LINE_ITEM_NUMBER_OF_UNITS * l.LINE_ITEM_ADJUSTMENT_AMOUNT;
+                    else
+                        l.LINE_ITEM_TOTAL = l.LINE_ITEM_NUMBER_OF_UNITS * l.LINE_ITEM_UNIT_COST;
+                    l.LINE_ITEM_DATE = LineDate.Value;
+                    l.LINE_ITEM_TASK_CODE = LineTaskCode.Text;
+                    l.LINE_ITEM_EXPENSE_CODE = LineExCode.Text;
+                    l.LINE_ITEM_ACTIVITY_CODE = LineActCode.Text;
+                    l.TIMEKEEPER_ID = LineKeeperID.Text;
+                    l.LINE_ITEM_DESCRIPTION = LineDesc.Text;
+                    l.TIMEKEEPER_NAME = LineKeeperName.Text;
+                    l.TIMEKEEPER_CLASSIFICATION = LineKeeperClas.Text;
+                    l.INVOICE_TOTAL = calcTotal();
+                }
+            }
+            catch (Exception e)
+            {
+                throw new InvalidLedesFile("Error saving line item", e);
+            }
+            return l;
         }
         private void DisplayInvoice(ledes l)
         {
@@ -103,58 +154,8 @@ namespace ledescreator
 
         private void btn_Save_Click(object sender, EventArgs e)
         {
-            ledes l = new ledes();
-            //Invoice common things are set across for each item as I go.
-            //There is certainly a better way to do this but I'm not working that hard on this.
-            //Line item number is the next in the list
-            l.LINE_ITEM_NUMBER = lLines.Items.Count + 1;
-            l.EXP_FEE_INV_ADJ_TYPE = LineFE.Text;
-            l.LINE_ITEM_DATE = LineDate.Value;
-            l.LINE_ITEM_TASK_CODE = LineTaskCode.Text;
-            l.LINE_ITEM_EXPENSE_CODE = LineExCode.Text;
-            l.LINE_ITEM_ACTIVITY_CODE = LineActCode.Text;
-            l.LINE_ITEM_DESCRIPTION = LineDesc.Text;
-            l.TIMEKEEPER_ID = LineKeeperID.Text;
-            l.TIMEKEEPER_NAME = LineKeeperName.Text;
-            l.TIMEKEEPER_CLASSIFICATION = LineKeeperClas.Text;
-            //Deal with converting to numbers
-            int num;
-            double doub;
-            if (int.TryParse(LineUnit.Text, out num))
-            {
-                l.LINE_ITEM_NUMBER_OF_UNITS = int.Parse(LineUnit.Text);
-            }
-            else
-            {
-                l.LINE_ITEM_NUMBER_OF_UNITS = 0;
-            }
-            if (double.TryParse(LineAdj.Text,out doub))
-            {
-                l.LINE_ITEM_ADJUSTMENT_AMOUNT = double.Parse(LineAdj.Text);
-            }
-            else
-            {
-                l.LINE_ITEM_ADJUSTMENT_AMOUNT = 0;
-            }
-            if (double.TryParse(LinePrice.Text,out doub))
-            {
-                l.LINE_ITEM_UNIT_COST = double.Parse(LinePrice.Text);
-            }
-            else
-            {
-                l.LINE_ITEM_UNIT_COST = 0;
-            }
-            //Calculate the totals
-            if (l.LINE_ITEM_ADJUSTMENT_AMOUNT > 0)
-            {
-                l.LINE_ITEM_TOTAL = l.LINE_ITEM_NUMBER_OF_UNITS * l.LINE_ITEM_ADJUSTMENT_AMOUNT;
-            }
-            else
-            {
-                l.LINE_ITEM_TOTAL = l.LINE_ITEM_NUMBER_OF_UNITS * l.LINE_ITEM_UNIT_COST;
-            }
             //add the new line item
-            addLine(l);
+            addLine(SaveFieldsToInvoice(true));
             //correct the totals for all items
             updateTotals();
         }
