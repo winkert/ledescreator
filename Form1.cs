@@ -9,61 +9,45 @@ namespace ledescreator
 {
     public partial class Form1 : Form
     {
-        public string dateformat = "yyyyMMdd";
+        
         #region Constructor
         public Form1()
         {
             InitializeComponent();
         }
         #endregion
+        public ledes Invoice = new ledes();
         #region Methods
-        public void addLine(ledes l)
-        {
-            lLines.Items.Add(l);
-        }
-        public double calcTotal()
-        {
-            double total = 0;
-            foreach (ledes l in lLines.Items)
-            {
-                total += l.LINE_ITEM_TOTAL;
-            }
-            return total;
-        }
         public void updateTotals()
         {
-            //correct the totals for all items
-            foreach (ledes i in lLines.Items)
-            {
-                i.INVOICE_DATE = InvoiceDate.Value;
-                i.INVOICE_NUMBER = InvoiceNum.Text;
-                i.CLIENT_ID = InvoiceClientID.Text;
-                i.LAW_FIRM_MATTER_ID = InvoiceMatterID.Text;
-                i.CLIENT_MATTER_ID = ClientMatterID.Text;
-                i.LAW_FIRM_ID = InvoiceTIN.Text;
-                i.BILLING_START_DATE = BillStart.Value;
-                i.BILLING_END_DATE = BillEnd.Value;
-                i.INVOICE_DESCRIPTION = InvoiceDesc.Text;
-                i.INVOICE_TOTAL = calcTotal();
-            }
-            DisplayInvoice(lLines.Items.OfType<ledes>().ToList().First());
-            txt_Inv_Total.Text = "Total: " + Utilities.ParseAsCurrency(calcTotal(), true);
+            //correct the totals for the invoice
+            Invoice.INVOICE_DATE = InvoiceDate.Value;
+            Invoice.INVOICE_NUMBER = InvoiceNum.Text;
+            Invoice.CLIENT_ID = InvoiceClientID.Text;
+            Invoice.LAW_FIRM_MATTER_ID = InvoiceMatterID.Text;
+            Invoice.CLIENT_MATTER_ID = ClientMatterID.Text;
+            Invoice.LAW_FIRM_ID = InvoiceTIN.Text;
+            Invoice.BILLING_START_DATE = BillStart.Value;
+            Invoice.BILLING_END_DATE = BillEnd.Value;
+            Invoice.INVOICE_DESCRIPTION = InvoiceDesc.Text;
+            Invoice.CalculateTotal();
+            DisplayInvoice(Invoice);
+            txt_Inv_Total.Text = "Total: " + Utilities.ParseAsCurrency(Invoice.INVOICE_TOTAL, true);
         }
-        private ledes SaveFieldsToInvoice(bool SaveLine = false)
+        private void SaveFieldsToInvoice(bool SaveLine = false)
         {
-            ledes l = new ledes();
             try
             {
-                l.INVOICE_DATE = InvoiceDate.Value;
-                l.INVOICE_NUMBER = InvoiceNum.Text;
-                l.CLIENT_ID = InvoiceClientID.Text;
-                l.LAW_FIRM_MATTER_ID = InvoiceMatterID.Text;
-                l.INVOICE_TOTAL = calcTotal();
-                l.BILLING_START_DATE = BillStart.Value;
-                l.BILLING_END_DATE = BillEnd.Value;
-                l.INVOICE_DESCRIPTION = InvoiceDesc.Text;
-                l.LAW_FIRM_ID = InvoiceTIN.Text;
-                l.CLIENT_MATTER_ID = ClientMatterID.Text;
+                Invoice.INVOICE_DATE = InvoiceDate.Value;
+                Invoice.INVOICE_NUMBER = InvoiceNum.Text;
+                Invoice.CLIENT_ID = InvoiceClientID.Text;
+                Invoice.LAW_FIRM_MATTER_ID = InvoiceMatterID.Text;
+                Invoice.BILLING_START_DATE = BillStart.Value;
+                Invoice.BILLING_END_DATE = BillEnd.Value;
+                Invoice.INVOICE_DESCRIPTION = InvoiceDesc.Text;
+                Invoice.LAW_FIRM_ID = InvoiceTIN.Text;
+                Invoice.CLIENT_MATTER_ID = ClientMatterID.Text;
+                Invoice.CalculateTotal();
             }
             catch (Exception e)
             {
@@ -73,34 +57,20 @@ namespace ledescreator
             {
                 if (SaveLine)
                 {
-                    l.LINE_ITEM_NUMBER = lLines.Items.Count + 1;
-                    l.EXP_FEE_INV_ADJ_TYPE = LineFE.Text;
-                    if (!double.TryParse(LineUnit.Text, out l.LINE_ITEM_NUMBER_OF_UNITS))
-                        l.LINE_ITEM_NUMBER_OF_UNITS = 0;
-                    if (!double.TryParse(LineAdj.Text, out l.LINE_ITEM_ADJUSTMENT_AMOUNT))
-                        l.LINE_ITEM_ADJUSTMENT_AMOUNT = 0;
-                    if (!double.TryParse(LinePrice.Text, out l.LINE_ITEM_UNIT_COST))
-                        l.LINE_ITEM_UNIT_COST = 0;
-                    if (l.LINE_ITEM_ADJUSTMENT_AMOUNT > 0)
-                        l.LINE_ITEM_TOTAL = l.LINE_ITEM_NUMBER_OF_UNITS * l.LINE_ITEM_ADJUSTMENT_AMOUNT;
-                    else
-                        l.LINE_ITEM_TOTAL = l.LINE_ITEM_NUMBER_OF_UNITS * l.LINE_ITEM_UNIT_COST;
-                    l.LINE_ITEM_DATE = LineDate.Value;
-                    l.LINE_ITEM_TASK_CODE = LineTaskCode.Text;
-                    l.LINE_ITEM_EXPENSE_CODE = LineExCode.Text;
-                    l.LINE_ITEM_ACTIVITY_CODE = LineActCode.Text;
-                    l.TIMEKEEPER_ID = LineKeeperID.Text;
-                    l.LINE_ITEM_DESCRIPTION = LineDesc.Text;
-                    l.TIMEKEEPER_NAME = LineKeeperName.Text;
-                    l.TIMEKEEPER_CLASSIFICATION = LineKeeperClas.Text;
-                    l.INVOICE_TOTAL = calcTotal();
+                    double units, adj, cost;
+                    if (!double.TryParse(LineUnit.Text, out units))
+                        units = 0;
+                    if (!double.TryParse(LineAdj.Text, out adj))
+                        adj = 0;
+                    if (!double.TryParse(LinePrice.Text, out cost))
+                        cost = 0;
+                    Invoice.AddLineItem(LineFE.Text, units, adj, LineDate.Value, LineTaskCode.Text, LineExCode.Text, LineActCode.Text, LineKeeperName.Text, LineDesc.Text, cost, LineKeeperName.Text, LineKeeperClas.Text);
                 }
             }
             catch (Exception e)
             {
                 throw new InvalidLedesFile("Error saving line item", e);
             }
-            return l;
         }
         private void DisplayInvoice(ledes l)
         {
@@ -114,7 +84,7 @@ namespace ledescreator
             InvoiceDesc.Text = l.INVOICE_DESCRIPTION;
             InvoiceTIN.Text = l.LAW_FIRM_ID;
         }
-        private void FillFields(ledes l)
+        private void FillFields(ledesLineItem l)
         {
             //Line item fields
             LineFE.Text = l.EXP_FEE_INV_ADJ_TYPE;
@@ -155,9 +125,13 @@ namespace ledescreator
         private void btn_Save_Click(object sender, EventArgs e)
         {
             //add the new line item
-            addLine(SaveFieldsToInvoice(true));
+            SaveFieldsToInvoice(true);
             //correct the totals for all items
             updateTotals();
+            if (lLines.SelectedIndex > -1)
+                lLines.Items.Add(Invoice.InvoiceLineItems[lLines.SelectedIndex]);
+            else
+                lLines.Items.Add(Invoice.InvoiceLineItems.Last());
         }
 
         private void btn_Load_Click(object sender, EventArgs e)
@@ -169,7 +143,7 @@ namespace ledescreator
             else
             {
                 //grab the ledes item
-                ledes l = (ledes)lLines.Items[lLines.SelectedIndex];
+                ledesLineItem l = (ledesLineItem)lLines.Items[lLines.SelectedIndex];
                 //fill the invoice details
                 FillFields(l);
             }
@@ -207,42 +181,9 @@ namespace ledescreator
             lines.Add(HeadLine);
             lines.Add(topLine);
             //add each item as a row
-            foreach (ledes l in lLines.Items)
+            for(int i = 0; i < Invoice.InvoiceLineItems.Count; i++)
             {
-
-                string newLine = "";
-                newLine += l.INVOICE_DATE.ToString(dateformat) + "|";
-                newLine += l.INVOICE_NUMBER + "|";
-                newLine += l.CLIENT_ID + "|";
-                newLine += l.LAW_FIRM_MATTER_ID + "|";
-                newLine += Utilities.ParseAsCurrency(l.INVOICE_TOTAL) + "|";
-                newLine += l.BILLING_START_DATE.ToString(dateformat) + "|";
-                newLine += l.BILLING_END_DATE.ToString(dateformat) + "|";
-                newLine += l.INVOICE_DESCRIPTION + "|";
-                newLine += l.LINE_ITEM_NUMBER + "|";
-                newLine += l.EXP_FEE_INV_ADJ_TYPE + "|";
-                newLine += l.LINE_ITEM_NUMBER_OF_UNITS + "|";
-                if (l.LINE_ITEM_ADJUSTMENT_AMOUNT > 0)
-                {
-                    newLine += Utilities.ParseAsCurrency(l.LINE_ITEM_ADJUSTMENT_AMOUNT) + "|";
-                }
-                else
-                {
-                    newLine += "|";
-                }
-                newLine += Utilities.ParseAsCurrency(l.LINE_ITEM_TOTAL) + "|";
-                newLine += l.LINE_ITEM_DATE.ToString(dateformat) + "|";
-                newLine += l.LINE_ITEM_TASK_CODE + "|";
-                newLine += l.LINE_ITEM_EXPENSE_CODE + "|";
-                newLine += l.LINE_ITEM_ACTIVITY_CODE + "|";
-                newLine += l.TIMEKEEPER_ID + "|";
-                newLine += l.LINE_ITEM_DESCRIPTION + "|";
-                newLine += l.LAW_FIRM_ID + "|";
-                newLine += Utilities.ParseAsCurrency(l.LINE_ITEM_UNIT_COST) + "|";
-                newLine += l.TIMEKEEPER_NAME + "|";
-                newLine += l.TIMEKEEPER_CLASSIFICATION + "|";
-                newLine += l.CLIENT_MATTER_ID + "[]";
-                lines.Add(newLine);
+                lines.Add(Invoice.WriteInvoice(i));
             }
             #endregion
             #region SaveFile
@@ -262,9 +203,7 @@ namespace ledescreator
             OpenFileDialog lfd = new OpenFileDialog();
             lfd.Filter = "Ledes 98B|*.txt";
             if (lfd.ShowDialog() == DialogResult.OK)
-            {
                 fileLocation = lfd.FileName;
-            }
             else
                 return;
             #region Check File
@@ -283,12 +222,10 @@ namespace ledescreator
                 {
                     throw new InvalidLedesFile("Bad Header on LEDES file");
                 }
-                for(int n = 2; n < lines.Count; n ++)
-                {
-                    string s = lines[n];
-                    ledes l = parseToLedes(s);
-                    addLine(l);
-                }
+                string[] exceptions = { HeadLine, topLine };
+                lines = lines.Except(exceptions).ToList();
+                //This should be threaded....
+                Invoice = parseToLedes(lines);
                 updateTotals();
             }
             catch (Exception error)
@@ -327,6 +264,7 @@ namespace ledescreator
             LineActCode.SelectedIndex = -1;
             LineActCode.SelectedIndex = -1;
             lLines.Items.Clear();
+            Invoice = new ledes();
         }
 
         private void exportToPDFToolStripMenuItem_Click(object sender, EventArgs e)
@@ -335,7 +273,7 @@ namespace ledescreator
             sfd.Filter = "Invoice PDF|*.pdf";
             if(sfd.ShowDialog() == DialogResult.OK)
             {
-                InvoicePDF pdf = new InvoicePDF(lLines.Items.OfType<ledes>().ToList());
+                InvoicePDF pdf = new InvoicePDF(Invoice);
                 pdf.SavePDF(sfd.FileName);
             }
         }

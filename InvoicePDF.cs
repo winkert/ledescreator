@@ -13,15 +13,15 @@ namespace ledescreator
         #region Constructors
         public InvoicePDF()
         { }
-        public InvoicePDF(List<ledes> l)
+        public InvoicePDF(ledes l)
         {
-            InvoiceLines = l;
-            InvoiceTotal = Utilities.ParseAsCurrency(l[0].INVOICE_TOTAL, true);
-            InvoiceDate = l.First().INVOICE_DATE.ToShortDateString();
-            InvoiceDateRange = l.First().BILLING_START_DATE.ToShortDateString() + " - " + l.First().BILLING_END_DATE.ToShortDateString();
-            InvoiceNumber = l.First().INVOICE_NUMBER;
-            InvoiceDescription = l.First().INVOICE_DESCRIPTION;
-            InvoiceTitle = InvoiceNumber + " - " + l.First().LAW_FIRM_MATTER_ID + " : " + InvoiceTotal + " (" + InvoiceDate + ")";
+            InvoiceLines = l.InvoiceLineItems;
+            InvoiceTotal = Utilities.ParseAsCurrency(l.INVOICE_TOTAL, true);
+            InvoiceDate = l.INVOICE_DATE.ToShortDateString();
+            InvoiceDateRange = l.BILLING_START_DATE.ToShortDateString() + " - " + l.BILLING_END_DATE.ToShortDateString();
+            InvoiceNumber = l.INVOICE_NUMBER;
+            InvoiceDescription = l.INVOICE_DESCRIPTION;
+            InvoiceTitle = InvoiceNumber + " - " + l.LAW_FIRM_MATTER_ID + " : " + InvoiceTotal + " (" + InvoiceDate + ")";
             #region Set Default Formats
             defaultBorder.Color = Colors.Black;
             defaultBorder.Style = BorderStyle.Single;
@@ -35,7 +35,7 @@ namespace ledescreator
         }
         #endregion
         #region Fields
-        private List<ledes> InvoiceLines = new List<ledes>();
+        private List<ledesLineItem> InvoiceLines = new List<ledesLineItem>();
         private string InvoiceTitle = string.Empty;
         private string InvoiceNumber = string.Empty;
         private string InvoiceDescription = string.Empty;
@@ -68,7 +68,7 @@ namespace ledescreator
             Paragraph daterange = s.AddParagraph(InvoiceDateRange);
             Paragraph total = s.AddParagraph("Total Due: " + InvoiceTotal);
         }
-        private void drawTable(List<ledes> l, ref Section s)
+        private void drawTable(List<ledesLineItem> l, ref Section s)
         {
             Table t = s.AddTable();
             t.Borders = defaultBorder;
@@ -80,7 +80,7 @@ namespace ledescreator
             Column lineDisallow = t.AddColumn("2.1cm");
             Column lineAmt = t.AddColumn("2.1cm");
             drawHeader(ref t);
-            foreach (ledes line in l)
+            foreach (ledesLineItem line in l)
             {
                 drawLineItem(line, ref t);
             }
@@ -97,7 +97,7 @@ namespace ledescreator
             r.Cells[4].AddParagraph("Disallowed");
             r.Cells[5].AddParagraph("Total");
         }
-        private void drawLineItem(ledes l, ref Table t)
+        private void drawLineItem(ledesLineItem l, ref Table t)
         {
             Row r = t.AddRow();
             r.Cells[0].AddParagraph(l.LINE_ITEM_DATE.ToShortDateString());
@@ -121,6 +121,7 @@ namespace ledescreator
 
     public static class Utilities
     {
+        public static string dateformat = "yyyyMMdd";
         public static string ParseAsCurrency(double m, bool dollarsign = false)
         {
             if (m == 0)
