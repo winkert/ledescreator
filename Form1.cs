@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -14,9 +15,14 @@ namespace ledescreator
         public Form1()
         {
             InitializeComponent();
+            bg_ProcessLedes.DoWork += bg_ProcessLedes_Do_Work;
+            bg_ProcessLedes.RunWorkerCompleted += bg_ProcessLedes_RunWorkerComplete;
         }
         #endregion
         public ledes Invoice = new ledes();
+        private BackgroundWorker bg_ProcessLedes = new BackgroundWorker();
+        private string fileLocation;
+        private int SelectedItem = -1;
         #region Methods
         public void updateTotals()
         {
@@ -33,6 +39,13 @@ namespace ledescreator
             Invoice.CalculateTotal();
             DisplayInvoice(Invoice);
             txt_Inv_Total.Text = "Total: " + Utilities.ParseAsCurrency(Invoice.INVOICE_TOTAL, true);
+            SelectedItem = lLines.SelectedIndex;
+            lLines.DataSource = null;
+            lLines.DataSource = Invoice.InvoiceLineItems;
+            if (SelectedItem < lLines.Items.Count)
+                lLines.SelectedIndex = SelectedItem;
+            else
+                lLines.SelectedIndex = SelectedItem -= 1;
         }
         private void SaveFieldsToInvoice(bool SaveLine = false)
         {
@@ -53,9 +66,9 @@ namespace ledescreator
             {
                 throw new InvalidLedesFile("Error saving LEDES", e);
             }
-            try
+            if (SaveLine)
             {
-                if (SaveLine)
+                try
                 {
                     double units, adj, cost;
                     if (!double.TryParse(LineUnit.Text, out units))
@@ -64,12 +77,37 @@ namespace ledescreator
                         adj = 0;
                     if (!double.TryParse(LinePrice.Text, out cost))
                         cost = 0;
-                    Invoice.AddLineItem(LineFE.Text, units, adj, LineDate.Value, LineTaskCode.Text, LineExCode.Text, LineActCode.Text, LineKeeperName.Text, LineDesc.Text, cost, LineKeeperName.Text, LineKeeperClas.Text);
+                    if (SelectedItem == -1)
+                    {
+                        Invoice.AddLineItem(LineFE.Text, units, adj, LineDate.Value, LineTaskCode.Text, LineExCode.Text, LineActCode.Text, LineKeeperID.Text, LineDesc.Text, cost, LineKeeperName.Text, LineKeeperClas.Text); 
+                    }
+                    else
+                    {
+                        ledesLineItem l = new ledesLineItem();
+                        l.LINE_ITEM_NUMBER = Invoice.InvoiceLineItems.Count + 1;
+                        l.EXP_FEE_INV_ADJ_TYPE = LineFE.Text;
+                        l.LINE_ITEM_NUMBER_OF_UNITS = units;
+                        l.LINE_ITEM_ADJUSTMENT_AMOUNT = adj;
+                        l.LINE_ITEM_DATE = LineDate.Value;
+                        l.LINE_ITEM_TASK_CODE = LineTaskCode.Text;
+                        l.LINE_ITEM_ACTIVITY_CODE = LineActCode.Text;
+                        l.TIMEKEEPER_ID = LineKeeperID.Text;
+                        l.LINE_ITEM_DESCRIPTION = LineDesc.Text;
+                        l.LINE_ITEM_UNIT_COST = cost;
+                        if (adj == 0)
+                            l.LINE_ITEM_TOTAL = units * cost;
+                        else
+                            l.LINE_ITEM_TOTAL = units * adj;
+                        l.TIMEKEEPER_CLASSIFICATION = LineKeeperClas.Text;
+                        l.TIMEKEEPER_NAME = LineKeeperName.Text;
+                        l.LINE_ITEM_EXPENSE_CODE = LineExCode.Text;
+                        Invoice.UpdateLineItem(l, SelectedItem);
+                    }
                 }
-            }
-            catch (Exception e)
-            {
-                throw new InvalidLedesFile("Error saving line item", e);
+                catch (Exception e)
+                {
+                    throw new InvalidLedesFile("Error saving line item", e);
+                }
             }
         }
         private void DisplayInvoice(ledes l)
@@ -120,35 +158,32 @@ namespace ledescreator
                 LineActCode.SelectedIndex = -1;
                 LineActCode.SelectedIndex = -1;
             }
+            lLines.ClearSelected();
+            SelectedItem = -1;
         }
-
         private void btn_Save_Click(object sender, EventArgs e)
         {
             //add the new line item
             SaveFieldsToInvoice(true);
             //correct the totals for all items
             updateTotals();
-            if (lLines.SelectedIndex > -1)
-                lLines.Items.Add(Invoice.InvoiceLineItems[lLines.SelectedIndex]);
-            else
-                lLines.Items.Add(Invoice.InvoiceLineItems.Last());
         }
-
         private void btn_Load_Click(object sender, EventArgs e)
         {
             if (lLines.SelectedIndex == -1)
             {
+                SelectedItem = -1;
                 MessageBox.Show("Please select an item to load.");
             }
             else
             {
                 //grab the ledes item
+                SelectedItem = lLines.SelectedIndex;
                 ledesLineItem l = (ledesLineItem)lLines.Items[lLines.SelectedIndex];
                 //fill the invoice details
                 FillFields(l);
             }
         }
-
         private void btn_Del_Click(object sender, EventArgs e)
         {
             if (lLines.SelectedIndex == -1)
@@ -157,7 +192,14 @@ namespace ledescreator
             }
             else
             {
-                lLines.Items.Remove(lLines.SelectedItem);
+                try
+                {
+                    Invoice.RemoveLineItem((ledesLineItem)lLines.SelectedItem);
+                }
+                catch (Exception er)
+                {
+                    MessageBox.Show(er.Message);
+                }
                 updateTotals();
             }
         }
@@ -199,40 +241,13 @@ namespace ledescreator
 
         private void btn_Import_Click(object sender, EventArgs e)
         {
-            string fileLocation;
             OpenFileDialog lfd = new OpenFileDialog();
             lfd.Filter = "Ledes 98B|*.txt";
             if (lfd.ShowDialog() == DialogResult.OK)
                 fileLocation = lfd.FileName;
             else
                 return;
-            #region Check File
-            try
-            {
-                List<string> lines = new List<string>();
-                using (System.IO.StreamReader file = new System.IO.StreamReader(fileLocation, Encoding.ASCII))
-                {
-                    string line;
-                    while ((line = file.ReadLine()) != null)
-                    {
-                        lines.Add(line);
-                    }
-                }
-                if (lines[0] != HeadLine || lines[1] != topLine)
-                {
-                    throw new InvalidLedesFile("Bad Header on LEDES file");
-                }
-                string[] exceptions = { HeadLine, topLine };
-                lines = lines.Except(exceptions).ToList();
-                //This should be threaded....
-                Invoice = parseToLedes(lines);
-                updateTotals();
-            }
-            catch (Exception error)
-            {
-                MessageBox.Show(error.InnerException.Message, error.Message);
-            }
-            #endregion
+            bg_ProcessLedes.RunWorkerAsync();
         }
 
         private void btn_NewInvoice_Click(object sender, EventArgs e)
@@ -310,6 +325,37 @@ namespace ledescreator
                     LineTaskCode.Enabled = true;
                     break;
             }
+        }
+        private void bg_ProcessLedes_Do_Work(object sender, DoWorkEventArgs e)
+        {
+            try
+            {
+                List<string> lines = new List<string>();
+                using (System.IO.StreamReader file = new System.IO.StreamReader(fileLocation, Encoding.ASCII))
+                {
+                    string line;
+                    while ((line = file.ReadLine()) != null)
+                    {
+                        lines.Add(line);
+                    }
+                }
+                if (lines[0] != HeadLine || lines[1] != topLine)
+                {
+                    throw new InvalidLedesFile("Bad Header on LEDES file");
+                }
+                string[] exceptions = { HeadLine, topLine };
+                lines = lines.Except(exceptions).ToList();
+                //This should be threaded....
+                Invoice = parseToLedes(lines);
+            }
+            catch (Exception error)
+            {
+                MessageBox.Show(error.InnerException.Message, error.Message);
+            }
+        }
+        private void bg_ProcessLedes_RunWorkerComplete(object sender, RunWorkerCompletedEventArgs e)
+        {
+            updateTotals();
         }
         #endregion
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace ledescreator
@@ -22,6 +23,14 @@ namespace ledescreator
         public string INVOICE_DESCRIPTION;
         public string LAW_FIRM_ID;
         public string CLIENT_MATTER_ID;
+        public void UpdateLineItem(ledesLineItem l, int index)
+        {
+            if (index < InvoiceLineItems.Count)
+                InvoiceLineItems[index] = l;
+            else
+                throw new IndexOutOfRangeException();
+            CalculateTotal();
+        }
         public void AddLineItem(ledesLineItem l)
         {
             InvoiceLineItems.Add(l);
@@ -29,24 +38,31 @@ namespace ledescreator
         }
         public void AddLineItem(string FE, double units, double adj, DateTime date, string taskcode, string expcode, string actcode, string tkID, string description, double cost, string tkName, string tkClass)
         {
-            ledesLineItem l = new ledesLineItem();
-            l.LINE_ITEM_NUMBER = InvoiceLineItems.Count + 1;
-            l.EXP_FEE_INV_ADJ_TYPE = FE;
-            l.LINE_ITEM_NUMBER_OF_UNITS = units;
-            l.LINE_ITEM_ADJUSTMENT_AMOUNT = adj;
-            l.LINE_ITEM_DATE = date;
-            l.LINE_ITEM_TASK_CODE = taskcode;
-            l.LINE_ITEM_ACTIVITY_CODE = actcode;
-            l.TIMEKEEPER_ID = tkID;
-            l.LINE_ITEM_DESCRIPTION = description;
-            l.LINE_ITEM_UNIT_COST = cost;
-            if (adj == 0)
-                l.LINE_ITEM_TOTAL = units * cost;
-            else
-                l.LINE_ITEM_TOTAL = units * adj;
-            l.TIMEKEEPER_CLASSIFICATION = tkClass;
-            l.TIMEKEEPER_NAME = tkName;
-            l.LINE_ITEM_EXPENSE_CODE = expcode;
+            try
+            {
+                ledesLineItem l = new ledesLineItem();
+                l.LINE_ITEM_NUMBER = InvoiceLineItems.Count + 1;
+                l.EXP_FEE_INV_ADJ_TYPE = FE;
+                l.LINE_ITEM_NUMBER_OF_UNITS = units;
+                l.LINE_ITEM_ADJUSTMENT_AMOUNT = adj;
+                l.LINE_ITEM_DATE = date;
+                l.LINE_ITEM_TASK_CODE = taskcode;
+                l.LINE_ITEM_ACTIVITY_CODE = actcode;
+                l.TIMEKEEPER_ID = tkID;
+                l.LINE_ITEM_DESCRIPTION = description;
+                l.LINE_ITEM_UNIT_COST = cost;
+                if (adj == 0)
+                    l.LINE_ITEM_TOTAL = units * cost;
+                else
+                    l.LINE_ITEM_TOTAL = units * adj;
+                l.TIMEKEEPER_CLASSIFICATION = tkClass;
+                l.TIMEKEEPER_NAME = tkName;
+                l.LINE_ITEM_EXPENSE_CODE = expcode;
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
             CalculateTotal();
         }
         public void CalculateTotal()
@@ -93,6 +109,20 @@ namespace ledescreator
             newLine += InvoiceLineItems[index].TIMEKEEPER_CLASSIFICATION + "|";
             newLine += CLIENT_MATTER_ID + "[]";
             return newLine;
+        }
+        public void RemoveLineItem(ledesLineItem l)
+        {
+            if (InvoiceLineItems.Contains(l))
+                InvoiceLineItems.Remove(l);
+            else
+                throw new ArgumentException("Invalid line item selected.");
+        }
+        public void RemoveLineItems(int l)
+        {
+            if (l < InvoiceLineItems.Count)
+                InvoiceLineItems.RemoveAt(l);
+            else
+                throw new IndexOutOfRangeException();
         }
         //override ToString()
         public override string ToString()
