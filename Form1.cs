@@ -238,7 +238,6 @@ namespace ledescreator
             }
             #endregion
         }
-
         private void btn_Import_Click(object sender, EventArgs e)
         {
             OpenFileDialog lfd = new OpenFileDialog();
@@ -249,7 +248,6 @@ namespace ledescreator
                 return;
             bg_ProcessLedes.RunWorkerAsync();
         }
-
         private void btn_NewInvoice_Click(object sender, EventArgs e)
         {
             foreach (Control c in flowLayoutPanel1.Controls)
@@ -281,7 +279,6 @@ namespace ledescreator
             lLines.Items.Clear();
             Invoice = new ledes();
         }
-
         private void exportToPDFToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SaveFileDialog sfd = new SaveFileDialog();
@@ -292,7 +289,6 @@ namespace ledescreator
                 pdf.SavePDF(sfd.FileName);
             }
         }
-
         private void btn_Quit_Click(object sender, EventArgs e)
         {
             Close();

@@ -220,7 +220,6 @@ namespace ledescreator
             l.CalculateTotal();
             return l.INVOICE_TOTAL;
         }
-
         private static string grabPart(string line, int part)
         {
             int start = 0;
@@ -232,7 +231,6 @@ namespace ledescreator
             string p = string.Empty;
             if (len > 0)
                 p = line.Substring(start, len).Replace("|",string.Empty);
-            Console.WriteLine(p);
             return p;
         }
     }
