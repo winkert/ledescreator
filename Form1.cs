@@ -351,6 +351,7 @@ namespace ledescreator
         }
         private void bg_ProcessLedes_RunWorkerComplete(object sender, RunWorkerCompletedEventArgs e)
         {
+            DisplayInvoice(Invoice);
             updateTotals();
         }
         #endregion
